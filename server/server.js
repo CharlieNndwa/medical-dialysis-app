@@ -217,7 +217,8 @@ db.connect()
 // APPLICATION ROUTER USAGE
 // ------------------------------------------------
 
-app.use('/api/auth', authRoutes);
+// 🚀 FIX: Change the route prefix from '/api/auth' to just '/auth'
+app.use('/auth', authRoutes); 
 app.use('/api/patients', patientRoutes);
 app.use('/api', medicalNotesRouter);
 app.use('/api/dialysis', dialysisRoutes);
