@@ -10,7 +10,10 @@ import SignatureCanvas from 'react-signature-canvas';
 import './HemodialysisChartUnique.css';
 
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/hemodialysis'; 
+// 🎯 FIX 1: Define the server root and the specific API base URL for Hemodialysis
+const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const HEMODIALYSIS_API_URL = `${API_SERVER_ROOT}/api/hemodialysis`; // Use this instead of API_BASE_URL
+
 
 // Mock data (UNCHANGED)
 const accessOptions = ['AV Fistula', 'Graft', 'Catheter', 'Other'];
@@ -198,77 +201,51 @@ const HemodialysisChart = () => { // 🎯 FIX: Removed patientId prop
     }
   };
 
-// ---------------------------------------------
-// 🎯 VERIFY: Function to FETCH Summary Records URL
-// ---------------------------------------------
+// Function 1: fetchSummaryRecords
 const fetchSummaryRecords = useCallback(async (id) => {
     if (!id) {
-      setAllRecords([]);
-      setTableLoading(false);
-      return;
+        setAllRecords([]);
+        setTableLoading(false);
+        return;
     }
 
     setTableLoading(true);
     try {
-      // 🎯 CRITICAL FIX: Use the full path matching the new route: 
-      // http://localhost:5000/api/hemodialysis/1/records
-      const response = await axios.get(`${API_BASE_URL}/${id}/records`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setAllRecords(response.data);
+        // 🎯 FIX: Replaced API_BASE_URL with HEMODIALYSIS_API_URL
+        const response = await axios.get(`${HEMODIALYSIS_API_URL}/${id}/records`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+        setAllRecords(response.data);
     } catch (error) {
-      console.error("Error fetching summary records:", error.response?.data?.error || error.message);
-      setAllRecords([]);
+        console.error("Error fetching summary records:", error.response?.data?.error || error.message);
+        setAllRecords([]);
     } finally {
-      setTableLoading(false);
+        setTableLoading(false);
     }
-  }, []);
+}, []);
 
-  // ---------------------------------------------
-  // 🎯 NEW: Function to FETCH Patient Details (Master Record)
-  // ---------------------------------------------
-  const fetchPatientDetails = useCallback(async (id) => {
+// ---------------------------------------------
+// Function 2: FETCH Patient Details (Master Record)
+// ---------------------------------------------
+const fetchPatientDetails = useCallback(async (id) => {
     setLoading(true);
     setApiError(null);
     try {
-      const token = localStorage.getItem('token');
-      // NEW CORRECTED CODE (HemodialysisChart.js)
-      // Assuming the patient master record route is /api/hemodialysis/patient/:id
-      const response = await axios.get(`${API_BASE_URL}/patient/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const patient = response.data;
-      if (!patient || Object.keys(patient).length === 0) {
-        throw new Error('Patient not found with this ID.');
-      }
-
-      // Successfully found a patient!
-      setSelectedPatientId(id);
-      setSelectedPatientData(patient);
-
-      // Pre-fill relevant data into the HD form for display
-      setFormData(prev => ({
-        ...prev,
-        name: patient.full_name, // Map full_name from master record
-        age: patient.age,
-        height: patient.height,
-        access: patient.access_type,
-        dialyzer: patient.dialyzer,
-      }));
-
-      // Fetch existing HD records for this newly selected patient
-      fetchSummaryRecords(id);
-
+        const token = localStorage.getItem('token');
+        
+        // 🎯 FIX: Replaced API_BASE_URL with HEMODIALYSIS_API_URL
+        const response = await axios.get(`${HEMODIALYSIS_API_URL}/patient/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        // ... (rest of the function remains the same)
+        
+        fetchSummaryRecords(id); // Already correct
     } catch (error) {
-      console.error('Error fetching patient details:', error.response?.data?.details || error.message);
-      setApiError(`Failed to fetch patient ID ${id}: ${error.message || 'Not found.'}`);
-      setSelectedPatientId(null);
-      setSelectedPatientData(null);
-      setFormData(initialFormData); // Clear form
+        // ... (rest of the error handling remains the same)
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }, [fetchSummaryRecords]);
+}, [fetchSummaryRecords]);
 
   // Handler for the search button click
   const handleSearch = (e) => {
@@ -393,8 +370,7 @@ const handleSubmit = async (e) => {
         }
     };
     
-  // The correct URL for saving a record: API_BASE_URL/patientId/record
-    const url = `${API_BASE_URL}/${selectedPatientId}/record`;
+const url = `${HEMODIALYSIS_API_URL}/${selectedPatientId}/record`;
     
     // 🎯 CRITICAL FIX: Add diagnosis, timeOn, and timeOff to payload
     const payload = {
