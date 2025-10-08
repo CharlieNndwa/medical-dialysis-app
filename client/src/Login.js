@@ -10,6 +10,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Login.css';
 import MedIcon from './assets/patient.png';
 
+// 🎯 NEW: Define the base URL from the environment variable
+// The base URL is now 'https://medical-dialysis-app-server.vercel.app'
+const API_BASE_URL = process.env.REACT_APP_API_URL; 
+
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -25,8 +29,9 @@ const Login = () => {
   const onSubmit = async e => {
     e.preventDefault();
     try {
-      // Login correctly sends just email and password
-      const res = await axios.post('/api/auth/login', formData); 
+        // ✅ FIX: Use the full Vercel URL base and append only the server-side route
+      const LOGIN_URL = `${API_BASE_URL}/auth/login`;
+      const res = await axios.post(LOGIN_URL, formData); 
 
       // Store the token in local storage
       localStorage.setItem('token', res.data.token);

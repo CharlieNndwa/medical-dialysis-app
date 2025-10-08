@@ -9,6 +9,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Register.css'; 
 import MedIcon from './assets/patient-data.png';
 
+// 🎯 NEW: Define the base URL from the environment variable
+// The base URL is now 'https://medical-dialysis-app-server.vercel.app'
+const API_BASE_URL = process.env.REACT_APP_API_URL; 
+
 const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -26,7 +30,7 @@ const Register = () => {
     // Renaming to match schema for consistency
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-    const onSubmit = async e => {
+        const onSubmit = async e => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
@@ -37,14 +41,19 @@ const Register = () => {
         }
 
         try {
-            // 🎯 FIX 3: Include all required fields in the request body for the backend
-            await axios.post('/api/auth/register', { 
-                first_name, // <-- Now sent
-                last_name,  // <-- Now sent
+            // ✅ CRITICAL FIX 2: Construct the full URL using the defined API_BASE_URL 
+            // This ensures the call goes to: https://medical-dialysis-app-server.vercel.app/auth/register
+            const REGISTER_URL = `${API_BASE_URL}/auth/register`;
+
+            // 🎯 Ensure all required fields are sent
+            const res = await axios.post(REGISTER_URL, { 
+                first_name, 
+                last_name, 
                 email, 
                 password 
             });
 
+            // (Your existing success logic)
             toast.success('Registration successful! Please login.', {
                 position: "top-center",
                 autoClose: 2000
@@ -54,13 +63,13 @@ const Register = () => {
             }, 2000);
 
         } catch (err) {
-            // Updated error handling to show backend message
+            // (Your existing error logic)
             toast.error(err.response?.data?.msg || 'Registration failed. Please try again.', {
                 position: "top-center"
             });
         }
     };
-
+    
     const containerVariants = {
         hidden: { opacity: 0, y: -50 },
         visible: {
