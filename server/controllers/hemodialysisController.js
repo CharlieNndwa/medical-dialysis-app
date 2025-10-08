@@ -151,9 +151,9 @@ const getPatientDetailsForChart = async (req, res) => {
                 pmr.contact_details,          
                 pmr.gender,
                 
-                -- 🎯 CRITICAL FIX: Add the fields required by HemodialysisChart.js
+                -- CRITICAL FIX: Change column name from 'dialyzer' to 'dialyser' (or 'dialysis_dialyzer', check schema)
                 pmr.height,                   
-                pmr.dialyzer,                 
+                pmr.dialyser AS dialyzer,     
                 pmr.access_type,
                 pmr.diagnosis                 
             FROM 
