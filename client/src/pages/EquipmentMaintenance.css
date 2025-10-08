@@ -1,0 +1,352 @@
+/* FILE: EquipmentMaintenance.css */
+
+/* ========================================= */
+/* EQUIPMENT MAINTENANCE CHART - PURE CSS REDESIGN */
+/* ========================================= */
+
+/* --- 1. Main Container & Page Title --- */
+.maintenance-form-container {
+    max-width: 1200px;
+    width: 95%; 
+    margin: 30px auto; 
+    padding-bottom: 50px; 
+}
+
+.page-title {
+    color: #34495e; /* Dark Blue/Grey */
+    font-weight: 700;
+    border-bottom: 4px solid #3498db; /* Strong professional blue line */
+    padding-bottom: 12px;
+    margin-bottom: 30px; 
+    font-size: 2.2rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* --- 2. Form Card & Reset Button --- */
+.maintenance-form-card {
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;
+    position: relative; 
+    margin-bottom: 40px; 
+}
+
+.reset-button-top-right {
+    position: absolute;
+    top: 15px; 
+    right: 30px; 
+    background-color: transparent;
+    color: #e74c3c; 
+    border: 2px solid #e74c3c;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.reset-button-top-right:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* --- 3. Form Grid Layout (PRESERVED) --- */
+.form-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 25px; 
+}
+
+.grid-item-12 { grid-column: span 12; }
+.grid-item-6 { grid-column: span 6; }
+.grid-item-4 { grid-column: span 4; }
+.grid-item-3 { grid-column: span 3; }
+
+/* --- 4. Input Styling (PRESERVED) --- */
+.form-section-header {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-bottom: 1px dashed #bdc3c7; 
+}
+
+.form-section-header h2 {
+    color: #34495e;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e; 
+    font-size: 0.95rem;
+}
+
+.input-group input[type="text"],
+.input-group input[type="date"],
+.input-group input[type="time"],
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bdc3c7; 
+    border-radius: 6px;
+    box-sizing: border-box; 
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: border-color 0.2s;
+}
+
+.input-group textarea {
+    resize: vertical;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: #3498db; 
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* Custom dropdown arrow (PRESERVED) */
+.input-group select {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%232c3e50%22%20d%3D%22M287%20197.8L146.2%2057%205.4%20197.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 0.65em auto;
+    padding-right: 30px; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    appearance: none; 
+}
+
+/* --- 5. Submit Button (PRESERVED) --- */
+.form-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ecf0f1; 
+}
+
+.submit-btn-styled {
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.save-maintenance-blue-btn {
+    background-color: #3498db; 
+    color: white;
+}
+
+.save-maintenance-blue-btn:hover {
+    background-color: #2980b9; 
+}
+
+.save-maintenance-blue-btn:disabled {
+    background-color: #95a5a6; 
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- 6. Toast Notification Styling (PRESERVED) --- */
+.em-custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 250px;
+}
+
+.em-status-toast-success {
+    background-color: #27ae60; 
+}
+
+.em-status-toast-error {
+    background-color: #e74c3c; 
+}
+
+.em-toast-icon {
+    margin-right: 15px;
+    font-size: 1.5rem;
+}
+
+.em-toast-message {
+    flex-grow: 1;
+    font-weight: 500;
+}
+
+/* ========================================= */
+/* 7. NEW: SUMMARY TABLE STYLES */
+/* ========================================= */
+
+.maintenance-summary-section {
+    margin-top: 40px;
+}
+
+.summary-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+}
+
+.em-summary-container {
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.em-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.95rem;
+}
+
+.em-summary-table thead th {
+    background-color: #34495e; 
+    color: white;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+}
+
+.em-summary-table tbody tr {
+    border-bottom: 1px solid #ecf0f1; 
+    transition: background-color 0.2s;
+}
+
+.em-summary-table tbody tr:hover {
+    background-color: #f7f9fb; 
+}
+
+.em-summary-table tbody td {
+    padding: 15px 12px;
+    color: #2c3e50;
+    vertical-align: top;
+}
+
+.summary-footer {
+    text-align: center;
+    padding: 20px 0 0;
+    color: #7f8c8d;
+    font-style: italic;
+    border-top: 1px solid #ecf0f1;
+    margin-top: 20px;
+}
+
+.em-loading-state, .em-empty-state {
+    text-align: center;
+    padding: 50px;
+    color: #7f8c8d;
+}
+
+.em-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: #bdc3c7;
+}
+
+/* ========================================= */
+/* MOBILE RESPONSIVENESS for TABLE */
+/* ========================================= */
+
+@media (max-width: 900px) {
+    .grid-item-6 { grid-column: span 12; }
+    .grid-item-4 { grid-column: span 6; }
+    .form-grid-layout {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .maintenance-form-card {
+        padding: 20px;
+    }
+    
+    .grid-item-4, .grid-item-6 { 
+        grid-column: span 12;
+    }
+
+    .reset-button-top-right {
+        position: static;
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 8px 15px;
+        order: -1; 
+    }
+
+    /* Stack table elements for better mobile view */
+    .em-summary-table, .em-summary-table tbody, .em-summary-table tr, .em-summary-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .em-summary-table thead {
+        display: none; 
+    }
+
+    .em-summary-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .em-summary-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .em-summary-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+        color: #34495e;
+    }
+}

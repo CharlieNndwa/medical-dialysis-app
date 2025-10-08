@@ -1,0 +1,310 @@
+/* ========================================= */
+/* PATHOLOGY CHART - PROFESSIONAL REDESIGN */
+/* (MUI STYLES COMPLETELY REMOVED) */
+/* ========================================= */
+
+/* --- 1. Main Container & Page Title (Black Heading) --- */
+body {
+    background-color: #f4f7f6; /* Light gray background for a clean medical look */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pathology-form-container {
+    max-width: 1400px;
+    width: 95%; 
+    margin: 30px auto; 
+}
+
+.page-title {
+    color: #2c3e50; /* Darker title */
+    font-weight: 700;
+    border-bottom: 4px solid #3498db; /* Professional Blue */
+    padding-bottom: 12px;
+    margin-bottom: 30px; 
+    font-size: 2.2rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* --- 2. Paper / Form Card Styling --- */
+.pathology-form-paper {
+    padding: 30px;
+    padding-bottom: 100px; /* Space for the fixed save button */
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;
+    position: relative; 
+}
+
+/* Reset Button Positioning (Smaller and Black) */
+.reset-button-top-right {
+    position: absolute;
+    top: 15px; 
+    right: 15px; 
+    font-size: 0.75rem; /* Smaller font size */
+    padding: 6px 12px; /* Smaller padding */
+    border: 1px solid #34495e; /* Dark border */
+    color: #34495e; /* Black/Dark text */
+    background: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+}
+.reset-button-top-right:hover {
+    border-color: #000000;
+    color: #000000;
+    background-color: #f0f0f0;
+}
+
+
+/* --- 3. Vertically Stacked Buttons Container (Left-Aligned and Smaller) --- */
+.button-stack-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Slightly reduced gap between buttons */
+    margin-top: 20px;
+    /* Enforces left alignment of the button group */
+    align-items: flex-start; 
+}
+
+/* Apply a maximum width to the individual button wrappers to make them smaller */
+.select-group,
+.other-test-button {
+    max-width: 450px; /* Set a max width for left-alignment/smaller appearance */
+    width: 100%; /* Ensures they remain responsive up to the max-width */
+}
+
+/* ========================================= */
+/* 4. CUSTOM DROPDOWN BUTTON STYLING */
+/* ========================================= */
+
+.select-group {
+    position: relative;
+    width: 100%;
+    min-height: 50px; /* Smaller height for buttons */
+}
+
+/* 4a. Hide the native select and position it on top for click handling */
+.select-group select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Make it invisible */
+    cursor: pointer;
+    z-index: 2; 
+}
+
+/* 4b. The custom visual display layer */
+.select-custom-display {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px; /* Smaller height */
+    padding: 0 15px; /* Reduced padding */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.0rem; /* Smaller font size */
+    font-weight: 700;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.select-icon-left {
+    margin-right: 12px; /* Reduced margin */
+    font-size: 1.1rem;
+}
+
+.select-value-text {
+    flex-grow: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.select-chevron-right {
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+}
+
+/* --- Themeing (Pre-Dialysis) --- */
+.pre-dialysis-select .select-custom-display {
+    background-color: #f1f8ff;
+    border: 2px solid #3498db;
+    color: #2c3e50;
+}
+.pre-dialysis-select:hover .select-custom-display {
+    background-color: #e8f5ff;
+    border-color: #2980b9;
+}
+
+/* --- Themeing (Post-Dialysis) --- */
+.post-dialysis-select .select-custom-display {
+    background-color: #f4f4f4;
+    border: 2px solid #34495e;
+    color: #2c3e50;
+}
+.post-dialysis-select:hover .select-custom-display {
+    background-color: #ebebeb;
+    border-color: #2c3e50;
+}
+
+/* ========================================= */
+/* 5. OTHER TEST BUTTON STYLING */
+/* ========================================= */
+
+.other-test-button {
+    height: 50px; /* Smaller height */
+    font-size: 1.0rem; /* Smaller font size */
+    font-weight: 700;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    
+    background-color: #ecf0f1;
+    border: 2px solid #bdc3c7;
+    color: #34495e;
+    
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 40px; /* Reduced padding */
+    position: relative;
+}
+.other-test-button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Glow Effect on Selection */
+.other-test-button.selected-glow {
+    background-color: #3498db;
+    color: white;
+    border-color: #2980b9;
+    box-shadow: 
+        0 0 10px rgba(52, 152, 219, 0.6),
+        0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Circle Box for Checkbox Look */
+.other-test-button::before {
+    content: '';
+    position: absolute;
+    left: 10px; /* Adjusted position */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px; /* Smaller circle */
+    height: 18px; /* Smaller circle */
+    border-radius: 50%;
+    border: 2px solid #3498db;
+    background-color: transparent;
+}
+
+/* Circle style when selected (with checkmark) */
+.other-test-button.selected-glow::before {
+    background-color: white;
+    border-color: white;
+    content: '✓'; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #3498db; 
+}
+
+
+/* ========================================= */
+/* 6. SAVE BUTTON (Fixed Bottom Positioning & Styling) */
+/* ========================================= */
+
+.fixed-bottom-save-container {
+    position: absolute; 
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 30px; 
+    background: white; 
+    border-top: 1px solid #eee;
+    text-align: center; 
+    box-sizing: border-box; 
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+}
+
+
+.submit-btn-styled.save-pathology-green-btn {
+    background-color: #27ae60;
+    color: white;
+    font-size: 1.1rem; /* Slightly smaller save button */
+    font-weight: bold;
+    padding: 12px 30px; /* Reduced padding */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+}
+.submit-btn-styled.save-pathology-green-btn:hover {
+    background-color: #1e8449;
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
+}
+
+/* ========================================= */
+/* MOBILE RESPONSIVENESS */
+/* ========================================= */
+
+@media (max-width: 600px) {
+    .pathology-form-paper {
+        padding: 15px;
+        padding-bottom: 90px; 
+    }
+    
+    .fixed-bottom-save-container {
+        padding: 15px 15px;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+    }
+
+    /* Reset button is now smaller/left-aligned by default */
+    .reset-button-top-right {
+        font-size: 0.65rem;
+        padding: 4px 8px;
+        top: 10px;
+        right: 10px;
+    }
+    
+    /* On mobile, allow buttons to take full width */
+    .select-group,
+    .other-test-button {
+        max-width: 100%; 
+    }
+    
+    /* Slightly reduce size of main buttons on mobile */
+    .select-custom-display,
+    .other-test-button {
+        font-size: 0.95rem; 
+        height: 50px;
+    }
+    
+    /* Adjust spacing for the circle in the 'Other Test' button */
+    .other-test-button {
+        padding-left: 35px;
+    }
+    .other-test-button::before {
+        left: 8px;
+        width: 16px;
+        height: 16px;
+    }
+}

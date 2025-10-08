@@ -1,0 +1,428 @@
+/* ========================================= */
+/* DIALYSIS CHART - PROFESSIONAL CSS STYLING */
+/* ========================================= */
+
+/* --- 1. Main Container and Typography --- */
+body {
+    background-color: #f4f7f6; /* Light gray background for a clean medical look */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dialysis-form-container {
+    max-width: 1400px;
+    width: 95%; 
+    margin: 30px auto; 
+    padding: 0; 
+}
+
+.page-title {
+    color: #0077b6; /* Deep blue for professionalism */
+    font-weight: 700;
+    border-bottom: 5px solid #00b4d8; 
+    padding-bottom: 15px;
+    margin-bottom: 40px; 
+    font-size: 2.5rem; 
+    text-align: left;
+}
+
+/* --- 2. Form Card and Layout --- */
+.dialysis-form-paper {
+    padding: 30px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Soft, professional shadow */
+    position: relative; 
+}
+
+/* CSS Grid Layout (Replacing MUI Grid) */
+.grid-container {
+    display: grid;
+    /* Default: 12 columns for large screens */
+    grid-template-columns: repeat(12, 1fr);
+    gap: 25px; 
+}
+
+/* Grid Item Sizing based on 12 columns */
+.grid-item-12 { grid-column: span 12; }
+.grid-item-5 { grid-column: span 5; }
+.grid-item-4 { grid-column: span 4; }
+.grid-item-3 { grid-column: span 3; }
+
+.form-divider {
+    grid-column: span 12;
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 10px 0;
+}
+.mt-40 { margin-top: 40px; }
+.center-text { text-align: center; }
+
+
+/* --- 3. Section Headers --- */
+.section-heading-card {
+    grid-column: span 12;
+    background-color: #f0f8ff; /* Very light blue background */
+    border-left: 6px solid #00b4d8; /* Striking color accent */
+    border-radius: 4px;
+    padding: 12px 20px;
+    margin-top: 15px;
+}
+
+.section-heading {
+    color: #2c3e50; 
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+
+/* --- 4. Form Field Styling (Inputs/Selects) --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #34495e; /* Darker label text */
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 15px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #fdfdff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #00b4d8;
+    box-shadow: 0 0 0 2px rgba(0, 180, 216, 0.2);
+    outline: none;
+}
+
+/* Custom dropdown arrow for Select */
+.select-group select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%23666666%22%20d%3D%22M287%2069.9L146.2%20210.7%205.4%2069.9h281.6z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 15px top 50%;
+    background-size: 10px;
+}
+
+
+/* --- 5. Intra-Dialysis Interval Table Styling --- */
+.intra-intervals-section {
+    margin-top: 15px;
+}
+
+.interval-title {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.interval-table-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.interval-table-header {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 2fr 1.5fr 1.5fr; /* Custom column distribution */
+    background-color: #e9ecef; /* Light gray header */
+    padding: 10px 15px;
+    border-bottom: 2px solid #ced4da;
+}
+
+.header-item {
+    font-weight: 700;
+    color: #495057;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.interval-table-body {
+    max-height: 400px; /* Max height for scrollable table body */
+    overflow-y: auto;
+    background-color: #ffffff;
+}
+
+.interval-row {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 2fr 1.5fr 1.5fr;
+    align-items: center;
+    padding: 5px 15px;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.interval-row:nth-child(odd) {
+    background-color: #fcfdff; /* Subtle zebra striping */
+}
+
+.row-item {
+    padding: 5px 10px;
+}
+
+.row-item input {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 0.95rem;
+    text-align: center;
+    transition: border-color 0.2s;
+}
+
+.row-item input:focus {
+    border-color: #00b4d8;
+    box-shadow: none;
+}
+
+.interval-time-input {
+    background-color: #f0f0f0 !important;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Add Interval Button */
+.interval-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add-interval-button {
+    background-color: #2ecc71; 
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
+}
+.add-interval-button:hover {
+    background-color: #27ae60;
+}
+
+
+/* --- 6. Signature Area Styling --- */
+.signature-section-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.signature-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.signature-title {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.signature-pad-card {
+    width: 100%;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fdfdff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 200px;
+    overflow: hidden;
+}
+
+.sigCanvas {
+    width: 100% !important;
+    height: 200px !important;
+    display: block; /* Fixes potential inline element spacing issues */
+}
+
+.clear-signature-btn {
+    margin-top: 10px;
+    background: none;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 6px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.clear-signature-btn:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+
+/* --- 7. Submit Button (Matching Professional Standard) --- */
+.submit-btn-styled {
+    background-color: #0077b6; /* Strong primary color */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 6px 15px rgba(0, 119, 182, 0.4);
+}
+.submit-btn-styled:hover {
+    background-color: #005f93;
+    box-shadow: 0 8px 20px rgba(0, 119, 182, 0.6);
+}
+
+/* --- 8. Custom Framer Motion Toast --- */
+.custom-toast {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-weight: 600;
+    min-width: 300px;
+    pointer-events: none; /* Ignore pointer events so it doesn't block clicks */
+}
+
+.custom-toast-success {
+    background-color: #2ecc71; 
+}
+
+.toast-icon {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    line-height: 1; 
+}
+
+.toast-message {
+    font-size: 1rem;
+}
+
+
+/* ========================================= */
+/* MOBILE RESPONSIVENESS */
+/* ========================================= */
+
+@media (max-width: 992px) {
+    /* Tablet views */
+    .grid-item-5, .grid-item-4, .grid-item-3 { 
+        grid-column: span 6; /* Half-width on medium screens */
+    }
+
+    /* Adjust table layout for smaller screens */
+    .interval-table-header, .interval-row {
+        grid-template-columns: 1.5fr 2fr 2fr 1.5fr 1.5fr; /* Keep 5 columns for now */
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Mobile views */
+    .dialysis-form-paper {
+        padding: 15px;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+
+    .section-heading {
+        font-size: 1.2rem;
+    }
+
+    /* All form items stack */
+    .grid-item-12, .grid-item-5, .grid-item-4, .grid-item-3 { 
+        grid-column: span 12; 
+    }
+
+    /* Simplify interval table for small phones - stacking or major column reduction */
+    .interval-table-card {
+        border-width: 0;
+        box-shadow: none;
+    }
+    
+    .interval-table-header {
+        display: none; /* Hide header completely */
+    }
+
+    .interval-row {
+        display: block; /* Stack items vertically */
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+    .interval-row:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .row-item {
+        padding: 5px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .row-item input {
+        width: 100%;
+        text-align: left;
+    }
+
+    /* Add labels to inputs when stacked */
+    .row-item-1::before { content: 'BP: '; font-weight: 600; color: #555; width: 60px; }
+    .row-item-2::before { content: 'Pulse: '; font-weight: 600; color: #555; width: 60px; }
+    .row-item-3::before { content: 'AP: '; font-weight: 600; color: #555; width: 60px; }
+    .row-item-4::before { content: 'VP: '; font-weight: 600; color: #555; width: 60px; }
+    .row-item-0 { 
+        text-align: center;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .interval-time-input {
+        background-color: transparent !important;
+        border: none;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    /* Toast Responsiveness */
+    .custom-toast {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+        top: 10px;
+        padding: 10px 15px;
+        min-width: unset;
+        font-size: 0.9rem;
+    }
+}

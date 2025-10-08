@@ -1,0 +1,214 @@
+/* FILE: Sidebar.css (FULL CORRECTED CODE - Conditional Mobile Text) */
+
+/* ------------------------------------------- */
+/* 1. DESKTOP/DEFAULT STYLES (Screen > 600px) */
+/* ------------------------------------------- */
+
+.sidebar {
+  width: 250px;
+  top: 64px; 
+  height: calc(100vh - 64px); 
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 20px;
+  transition: width 0.3s ease;
+  position: fixed;
+  left: 0;
+  z-index: 900; 
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+  padding: 10px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center; 
+  margin-bottom: 20px;
+}
+
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+}
+
+.icon-btn-transparent {
+    color: #ecf0f1; 
+    border: none;
+    padding: 0;
+    font-size: 24px; 
+    cursor: pointer;
+    background-color: transparent !important; 
+    outline: none;
+    box-shadow: none;
+    width: 100%; 
+    text-align: center;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-btn-transparent:hover {
+    color: #3498db; 
+    transform: scale(1.1);
+}
+
+/* --- NAVIGATION STYLES (DESKTOP) --- */
+
+.sidebar-nav {
+    flex-grow: 1;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block; 
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    margin: 5px 0;
+    color: #ecf0f1;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-nav li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav li a.active {
+    background-color: #34495e; 
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.7); 
+    font-weight: bold;
+}
+
+.sidebar-nav li a svg {
+    font-size: 1.2rem;
+    color: #ecf0f1;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
+}
+
+/* 🎯 NEW DESKTOP LOGIC: Use the desktop name via CSS content */
+.sidebar-nav li a .nav-text {
+    display: block; /* Ensure text is visible on desktop */
+}
+
+/* Hide text when desktop sidebar is collapsed */
+.sidebar.collapsed .sidebar-nav li a .nav-text {
+    display: none; 
+}
+
+.sidebar.collapsed .sidebar-nav li a {
+    justify-content: center;
+    padding: 10px 0;
+}
+
+/* MAGIC GLOW HOVER/ACTIVE EFFECT for Icons - Desktop */
+.sidebar-nav li a:hover svg,
+.sidebar-nav li a.active svg {
+    transform: scale(1.1); 
+    filter: drop-shadow(0 0 5px #ffffff) drop-shadow(0 0 10px #3498db); 
+}
+
+
+/* ------------------------------------------- */
+/* 2. MOBILE FIXED BOTTOM NAVIGATION (Screen <= 600px) */
+/* ------------------------------------------- */
+
+@media (max-width: 600px) {
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        top: auto; 
+        width: 100%; 
+        height: 60px; 
+        padding: 0; 
+        z-index: 1100; 
+        flex-direction: row; 
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); 
+    }
+
+    .sidebar-header {
+        display: none;
+    }
+
+    .sidebar-nav {
+        width: 100%;
+    }
+    
+    .sidebar-nav ul {
+        display: flex; 
+        justify-content: space-around; 
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+
+    .sidebar-nav li {
+        flex: 1; 
+        text-align: center;
+    }
+
+    /* Style for the mobile tab link */
+    .sidebar-nav li a {
+        flex-direction: column; 
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0; 
+        margin: 0;
+        gap: 2px; 
+        
+        font-size: 0.7rem; 
+        color: #95a5a6; 
+        border-radius: 0;
+        background-color: transparent;
+        transition: color 0.2s ease;
+    }
+    
+    .sidebar-nav li a svg {
+        font-size: 1.4rem; 
+        margin-bottom: 0; 
+        color: inherit; 
+    }
+    
+    /* 🎯 CRITICAL FIX: Use :before pseudo-element to inject the mobile-specific text */
+    .sidebar-nav li a .nav-text {
+        /* Hide the original span content */
+        display: none;
+    }
+    
+    .sidebar-nav li a .nav-text::after {
+        content: attr(data-mobile); /* 👈 Use the 'data-mobile' attribute (which is 'Hemodialysis' for that tab, or the full name for others) */
+        display: block; /* Make the generated content visible */
+        font-size: 0.7rem; /* Ensure proper mobile text size */
+    }
+
+    /* Active/Selected Link Styling for Mobile */
+    .sidebar-nav li a.active {
+        background-color: transparent; 
+        box-shadow: none;
+        color: #ecf0f1; 
+    }
+    
+    /* MAGIC GLOW Effect on Active Mobile Icon */
+    .sidebar-nav li a.active svg {
+        color: #ecf0f1; 
+        filter: drop-shadow(0 0 3px #ffffff) drop-shadow(0 0 6px #3498db); 
+        transform: scale(1.05); 
+    }
+
+    /* Reset collapsed state styles that interfere with mobile */
+    .sidebar.collapsed {
+        width: 100%; 
+        padding: 0; 
+    }
+}

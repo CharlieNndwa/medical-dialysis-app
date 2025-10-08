@@ -1,0 +1,139 @@
+/* src/Login.css */
+
+/* This centers the entire content and sets the background */
+.login-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('./assets/background.jpg') no-repeat center center/cover;
+}
+
+/* The login card styles */
+.login-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 20px;
+    width: 100%;
+    max-width: 450px;
+    z-index: 2;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Other styles as you had them */
+.login-icon-placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: #e0e7ff;
+    border-radius: 50%;
+    margin: 0 auto 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #1a73e8;
+    box-shadow: 0 5px 15px rgba(26, 115, 232, 0.2);
+}
+
+.login-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.login-subtitle {
+    font-size: 1rem;
+    color: #616161;
+    margin-bottom: 30px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #424242;
+}
+
+.form-group input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #1a73e8;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+
+.login-btn {
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #155bb5;
+}
+
+.register-link {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #757575;
+}
+
+.register-link a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* ----- MEDIA QUERIES FOR MOBILE RESPONSIVENESS ----- */
+@media (max-width: 600px) {
+    .login-card {
+        padding: 30px 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin: 20px;
+    }
+    
+    .login-subtitle {
+        margin-bottom: 20px;
+    }
+    
+    .form-group input {
+        width: 100%;
+    }
+
+    .login-btn {
+        width: 100%;
+    }
+}

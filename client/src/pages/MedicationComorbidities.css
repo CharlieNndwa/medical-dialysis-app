@@ -1,0 +1,264 @@
+/* ========================================= */
+/* MEDICATION & CO-MORBIDITIES CHART - PURE CSS */
+/* Layout based on EquipmentMaintenance.css */
+/* ========================================= */
+
+/* --- 1. Main Container & Page Title --- */
+.meds-comorb-form-container {
+    max-width: 1200px;
+    width: 95%; 
+    margin: 30px auto; 
+}
+
+.page-title {
+    color: #34495e; 
+    font-weight: 700;
+    border-bottom: 4px solid #3498db; 
+    padding-bottom: 12px;
+    margin-bottom: 30px; 
+    font-size: 2.2rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* --- 2. Form Card & Reset Button --- */
+.meds-comorb-form-card {
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); 
+    background-color: #ffffff;
+    position: relative;
+}
+
+.reset-button-top-right {
+    position: absolute;
+    top: 15px; 
+    right: 30px; 
+    background-color: transparent;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.reset-button-top-right:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* --- 3. Form Grid Layout (Vertical Stacking) --- */
+.form-grid-layout {
+    display: flex;
+    flex-direction: column; 
+    gap: 35px; 
+}
+
+/* --- 4. Section Headings (Clear and Visible) --- */
+.form-section {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.section-heading-card {
+    font-size: 1.35rem; 
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* --- 5. Input Groups (Label/Field Pairing) --- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    width: 100%; 
+}
+
+.input-group label {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.input-group input,
+.input-group textarea,
+.input-group select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fcfcfc;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    border-color: #3498db; 
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* --- 6. Co-morbidities Checkbox Grid (with Glow Effect) --- */
+.co-morbidity-checks-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.checkbox-group {
+    flex: 1 1 calc(33.333% - 15px); 
+    max-width: calc(33.333% - 15px);
+    
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.2s ease-in-out;
+    position: relative; 
+}
+
+.checkbox-group:hover {
+    border-color: #3498db;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+}
+
+.checkbox-group input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #555;
+    font-weight: 500;
+    font-size: 1rem;
+    flex-grow: 1;
+}
+
+.check-icon {
+    margin-right: 10px;
+    color: #999;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+/* Style when CHECKED */
+.checkbox-group input[type="checkbox"]:checked + .checkbox-label {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.checkbox-group input[type="checkbox"]:checked + .checkbox-label .check-icon {
+    color: #3498db;
+}
+
+/* 🎯 FIXED GLOW EFFECT: Apply pseudo-element to the parent container when input is checked */
+/* We target the label via :checked and then target the parent with a utility class from React state (for broader browser compatibility) */
+.checkbox-group.is-checked {
+    /* Base style for the checked state */
+    background-color: #eef8ff;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px #3498db; /* Initial border effect */
+}
+
+.checkbox-group.is-checked::before {
+    /* This creates the inner glow shadow */
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 3px solid transparent; /* Acts as the glow spacing */
+    border-radius: 10px; 
+    box-shadow: 0 0 12px rgba(52, 152, 219, 0.9); /* The powerful glowing effect */
+    animation: pulse-glow 1.5s infinite alternate ease-in-out; 
+    z-index: -1; 
+}
+
+/* Keyframe animation for the subtle glow pulse */
+@keyframes pulse-glow {
+    from {
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+    to {
+        box-shadow: 0 0 15px rgba(52, 152, 219, 0.9);
+    }
+}
+
+
+/* --- 7. Save Button Styling --- */
+.form-footer {
+    border-top: 1px solid #f0f0f0;
+    padding-top: 30px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.submit-btn-styled.save-meds-comorb-blue-btn {
+    background-color: #3498db; 
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 15px 35px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.submit-btn-styled.save-meds-comorb-blue-btn:hover {
+    background-color: #2980b9; 
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+}
+
+/* --- 8. Mobile Responsiveness --- */
+@media (max-width: 900px) {
+    .co-morbidity-checks-grid {
+        gap: 10px;
+    }
+    .checkbox-group {
+        flex: 1 1 calc(50% - 5px); 
+        max-width: calc(50% - 5px);
+    }
+}
+
+@media (max-width: 600px) {
+    .meds-comorb-form-card {
+        padding: 20px;
+    }
+    .page-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    .checkbox-group {
+        flex: 1 1 100%; 
+        max-width: 100%;
+    }
+    .submit-btn-styled {
+        font-size: 1rem !important;
+        padding: 12px 25px !important;
+    }
+}

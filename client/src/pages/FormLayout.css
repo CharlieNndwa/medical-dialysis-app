@@ -1,0 +1,172 @@
+/* 1. Overall Container: Eliminates Gaps & Centers Content */
+.form-container {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  /* FIX: INCREASED PADDING FROM 30px TO 40px FOR MORE INNER SPACE */
+  padding: 40px; 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  
+  /* Retaining the existing width settings for a wider form */
+  max-width: 1400px; 
+  width: 95%; 
+  margin: 20px auto; 
+}
+
+/* 2. Form Section Styling: Now applied via a custom Typography class and MUI Box/Paper */
+/* NOTE: The layout is now handled by MUI's <Grid> component, replacing the old .form-grid */
+
+.form-section-heading {
+  color: #34495e !important;
+  /* FIX: Changed the 22px border to a clean 2px */
+  border-bottom: 2px solid #3498db !important; 
+  padding-bottom: 10px !important;
+  margin-bottom: 20px !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+}
+
+/* 3. Button Styling */
+.submit-btn {
+  background-color: #3498db;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.submit-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* 4. Records Table Styling (Remains Professional) */
+.records-table-container {
+  margin-top: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.records-table-container h3 {
+  color: #34495e;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  text-align: left;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+table th {
+  background-color: #ecf0f1;
+  color: #333;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.button-container {
+  text-align: center;
+  margin-bottom: 5px; 
+}
+
+/* Updated style for the toggle button that toggles form/records */
+.toggle-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-btn:hover {
+  background-color: #45a049;
+}
+
+/* INSERT/CORRECT WITH THIS BLOCK */
+.icon-btn-transparent {
+  background-color: transparent; 
+  color: #ecf0f1; /* 🎯 FIX: Set icon color to the sidebar's light text color */
+  border: none;
+  padding: 0;
+  font-size: 24px; 
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.icon-btn-transparent:hover {
+  color: #3498db; /* Keep the nice hover blue color */
+}
+
+.signature-container {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+/* 🎯 NEW FIX: Class to ensure the signature component is centered within its Grid column */
+.centered-content-box {
+    /* Overrides any left-alignment that might be caused by Grid */
+    display: flex;
+    justify-content: center;
+    max-width: 500px; 
+    width: 100%; 
+    margin: 0 auto; /* Critical for centering */
+}
+
+/* 🎯 UPDATED FIX: Increased height for a better signing area */
+.sigCanvas {
+    width: 100%;
+    height: 180px; /* Corrected height */
+    border: 1px dashed #999;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.clear-sig-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.signature-container {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+}

@@ -1,0 +1,677 @@
+/* ========================================= */
+/* HEMODIALYSIS CHART - UNIQUE NAMESPACED CSS */
+/* (Styles derived from PatientDetails.css & DialysisChart.css) */
+/* ========================================= */
+
+/* --- 1. Main Container and Page Title --- */
+.hd-chart-main-wrapper { 
+    max-width: 1400px;
+    width: 95%; 
+    margin: 30px auto; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hd-page-heading { 
+    color: #34495e; 
+    font-weight: 700;
+    border-bottom: 4px solid #3498db; 
+    padding-bottom: 12px;
+    margin-bottom: 30px; 
+    font-size: 2.2rem; 
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- 2. Form Card and Positioning --- */
+.hd-form-paper-card { 
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+    background-color: #ffffff; 
+    position: relative; 
+}
+
+.hd-action-reset-btn { 
+    /* 🎯 CRITICAL FIX: Position the button relative to the parent card */
+    position: absolute;
+    top: 20px; /* Adjust vertical position */
+    right: 30px; /* Adjust horizontal position */
+    z-index: 10; /* Ensure it is on top of form content */
+    
+    /* Enhance visibility and distinctness */
+    background-color: #f39c12; /* Amber/Warning for Reset */
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.hd-action-reset-btn:hover {
+    background-color: #e67e22; /* Darker on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- 3. Form Sections and Titles --- */
+.hd-form-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+.hd-section-title {
+    color: #2c3e50; 
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- 4. Form Grid Layouts --- */
+.hd-grid-layout-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.hd-grid-layout-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Highlight key vitals fields */
+.hd-vitals-grid .hd-input-group label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+.hd-vitals-grid input {
+    border: 1px solid #3498db;
+}
+
+/* --- 5. Form Fields (Inputs, Labels, Selects) --- */
+.hd-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.hd-input-label {
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+    color: #34495e;
+    font-weight: 500;
+}
+
+.hd-input-field, .hd-select-field {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.hd-input-field:focus, .hd-select-field:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* --- 6. Dynamic Time Intervals Table --- */
+.hd-time-intervals-section {
+    padding: 30px 20px;
+    overflow-x: auto; /* Ensures horizontal scrolling on small screens */
+}
+
+.hd-table-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.hd-interval-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Minimum width for table to prevent excessive crushing */
+}
+
+.hd-interval-table th, .hd-interval-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.hd-interval-table th {
+    background-color: #ecf0f1;
+    color: #34495e;
+    font-weight: 700;
+}
+
+.hd-interval-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.hd-interval-input {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80px; /* Controlled width */
+}
+
+.hd-interval-time {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.hd-add-interval-row {
+    text-align: center;
+}
+
+.hd-add-btn {
+    background-color: #2ecc71; 
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.hd-add-btn:hover {
+    background-color: #27ae60;
+}
+
+.hd-remove-btn {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+/* --- 7. Submit Button and Footer --- */
+.hd-form-footer-area {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.hd-divider-main {
+    height: 1px;
+    background-color: #ccc;
+    margin: 20px 0;
+}
+
+.hd-submit-action-btn {
+    background-color: #3498db; 
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.hd-submit-action-btn:hover {
+    background-color: #2980b9;
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+}
+
+/* --- 8. Summary Table Styles (Original) --- */
+.hd-summary-card {
+    max-width: 800px;
+    margin: 40px auto; 
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border-left: 5px solid #2ecc71; /* Green highlight for success */
+}
+
+.hd-summary-title {
+    color: #27ae60;
+    font-size: 1.8rem;
+    font-weight: 700;
+    border-bottom: 2px solid #27ae60;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hd-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.hd-summary-table th, .hd-summary-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+
+.hd-summary-table td {
+    background-color: #ffffff;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 1.05rem;
+}
+
+/* Specific styling for Vitals/Key Metrics */
+.hd-vitals-cell {
+    font-weight: 700 !important;
+    color: #c0392b; /* Reddish tone for key results */
+}
+
+/* --- 9. Toast Notification Styles (Feedback) --- */
+.hd-custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+}
+
+.hd-toast-success {
+    background-color: #27ae60; 
+}
+
+.hd-toast-error {
+    background-color: #e74c3c; 
+}
+
+.hd-toast-icon {
+    font-size: 1.2rem;
+}
+
+/* --- 10. Mobile Responsiveness (Less detailed original block) --- */
+@media (max-width: 768px) {
+    .hd-chart-main-wrapper {
+        width: 98%;
+        margin: 15px auto;
+    }
+
+    .hd-form-paper-card {
+        padding: 15px;
+    }
+
+    .hd-page-heading {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .hd-section-title {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+    }
+
+    .hd-grid-layout-3, .hd-grid-layout-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .hd-action-reset-btn {
+        position: static;
+        margin-bottom: 15px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hd-submit-action-btn {
+        width: 100%;
+    }
+
+    /* Summary table responsiveness for mobile */
+    .hd-summary-card {
+        padding: 20px;
+        margin-top: 25px;
+    }
+
+    .hd-summary-table th, .hd-summary-table td {
+        display: block;
+        width: 100%;
+        text-align: right;
+    }
+
+    .hd-summary-table th {
+        text-align: left;
+        border-bottom: none;
+        background-color: #f0f0f0;
+        margin-top: 5px;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .hd-summary-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        display: block;
+    }
+}
+
+/* --- 6. Signature Area Styling --- */
+.signature-section-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.signature-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.signature-title {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.signature-pad-card {
+    width: 100%;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fdfdff;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 200px;
+    overflow: hidden;
+}
+
+.sigCanvas {
+    width: 100% !important;
+    height: 200px !important;
+    display: block; /* Fixes potential inline element spacing issues */
+}
+
+.clear-signature-btn {
+    margin-top: 10px;
+    background: none;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 6px 15px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.clear-signature-btn:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* ========================================= */
+/* 7. Summary Table Styling (MATCHING PatientDetails.css) - REPEATED BLOCK REMOVED/MERGED */
+/* ========================================= */
+
+.hd-summary-table-container {
+    /* Mimics the .patient-form-paper card style */
+    margin-top: 40px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+    background-color: #ffffff;
+}
+
+.hd-summary-title {
+    /* Mimics the .hd-title or .page-title style */
+    color: #34495e;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f39c12; /* Accent color from PatientDetails */
+    padding-bottom: 10px;
+}
+
+.hd-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.hd-summary-table thead {
+    /* Matches the dark blue header in PatientDetails */
+    background-color: #34495e; 
+    color: white;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden; 
+}
+
+.hd-summary-table th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.hd-summary-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+.hd-summary-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.hd-summary-table tbody tr:hover {
+    background-color: #f8f9fa; /* Light hover effect */
+}
+
+.hd-summary-table td {
+    padding: 15px 20px;
+    vertical-align: middle;
+    color: #555;
+}
+
+/* Mobile Responsiveness (Adapted from PatientDetails.css) */
+@media (max-width: 768px) {
+    .hd-summary-table-container {
+        padding: 15px;
+    }
+    
+    .hd-summary-table, .hd-summary-table tbody, .hd-summary-table tr, .hd-summary-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .hd-summary-table thead {
+        display: none; /* Hide header row on mobile */
+    }
+
+    .hd-summary-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .hd-summary-table td {
+        text-align: right;
+        padding-left: 50%; 
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .hd-summary-table td:last-child {
+        border-bottom: none;
+    }
+
+    /* Data label pseudo-element for mobile */
+    .hd-summary-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 20px;
+        width: calc(50% - 30px);
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 700;
+        color: #34495e;
+    }
+}
+
+/* ================================================================= */
+/* MOBILE RESPONSIVE CODE SECTION (CONSOLIDATED & ROBUST) */
+/* This section replaces all existing @media blocks in HemodialysisChartUnique.css */
+/* ================================================================= */
+
+@media (max-width: 1024px) { /* Tablets and smaller desktops */
+    /* 1. Page Heading Adjustment */
+    .hd-page-heading {
+        font-size: 2rem;
+    }
+    
+    /* 2. Form Card Padding */
+    .hd-form-paper-card {
+        padding: 25px;
+    }
+
+    /* 3. Vitals/Time Interval Table Scroll (Ensure container gets full width) */
+    .hd-vitals-table-container {
+        /* This is crucial for the large table to scroll horizontally instead of breaking the layout */
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 20px;
+    }
+    .hd-vitals-table {
+        /* This minimum width prevents the table from collapsing entirely */
+        min-width: 850px; 
+    }
+}
+
+@media (max-width: 768px) { /* Small Tablets and large Mobile Devices */
+    .hd-chart-main-wrapper {
+        width: 98%;
+        margin: 15px auto;
+    }
+    
+    /* 1. Search Bar and Patient Info Layout (Sidebar Fix) */
+    .hd-patient-search-area,
+    .hd-patient-info-display {
+        display: block; /* Force blocks to stack */
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .hd-patient-info-card {
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    /* 2. Main Form Fields Stacking */
+    .hd-form-row {
+        flex-direction: column; /* Stack all form elements */
+        gap: 0;
+    }
+    .hd-form-row > * {
+        width: 100% !important; /* Ensure all children take full width */
+        margin-bottom: 15px;
+    }
+    .hd-form-paper-card select, 
+    .hd-form-paper-card input, 
+    .hd-form-paper-card textarea,
+    .hd-form-paper-card .MuiFormControl-root {
+        width: 100% !important; /* Ensure all form fields are full width */
+        margin-bottom: 15px; /* Add spacing between stacked inputs */
+    }
+
+    /* 3. Signature Area Fix */
+    .signature-pad-card {
+        height: 120px; /* Reduced height for small screens */
+    }
+    .sigCanvas {
+        height: 120px !important;
+    }
+
+    /* 4. Action Button Stacking */
+    .hd-action-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .hd-action-buttons button,
+    .hd-action-buttons .submit-btn-styled {
+        width: 100%; /* Full width buttons for easy tapping */
+    }
+
+    /* --- Summary Display Table Responsiveness (Stacking) --- */
+    .hd-summary-table-container {
+        padding: 10px;
+    }
+    .hd-summary-table, .hd-summary-table tbody, .hd-summary-table tr, .hd-summary-table td {
+        display: block;
+        width: 100%;
+    }
+    .hd-summary-table thead {
+        display: none; /* Hide header row on mobile */
+    }
+    .hd-summary-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    .hd-summary-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .hd-summary-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #555;
+        text-align: left;
+    }
+}
+
+@media (max-width: 576px) { /* Small Mobile Devices */
+    .hd-page-heading {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    .hd-form-paper-card {
+        padding: 15px;
+    }
+}

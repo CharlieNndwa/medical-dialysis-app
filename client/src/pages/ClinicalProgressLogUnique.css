@@ -1,0 +1,836 @@
+/* ================================================= */
+/* CLINICAL PROGRESS LOG - UNIQUE NAMESPACED CSS */
+/* (Includes precise table divisions & canvas styling) */
+/* ================================================= */
+
+/* --- 1. Main Container and Page Title --- */
+.cpl-main-wrapper { 
+    max-width: 1400px;
+    width: 95%; 
+    margin: 30px auto; 
+    padding: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.cpl-page-heading { 
+    color: #34495e; 
+    font-weight: 700;
+    border-bottom: 4px solid #3498db; 
+    padding-bottom: 12px;
+    margin-bottom: 30px; 
+    font-size: 2.2rem; 
+    text-align: left;
+}
+
+/* --- 2. Form Card and Positioning --- */
+.cpl-form-paper-card { 
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+    background-color: #ffffff; 
+    position: relative; 
+}
+
+.cpl-reset-button-wrapper {
+    position: absolute;
+    top: 20px;       /* 20px down from the top edge of the card */
+    right: 30px;     /* 30px from the right edge of the card */
+    z-index: 10;     /* Ensure it sits above the table content if there's overlap */
+}
+
+/* --- 2C. Styling for the Reset Button itself --- */
+.cpl-action-reset-btn {
+    background-color: #f39c12; /* A warning/reset color (e.g., orange/yellow) */
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cpl-action-reset-btn:hover {
+    background-color: #e67e22; /* Slightly darker on hover */
+}
+
+/* --- 3. Table Layout (Core Structure from Image) --- */
+.cpl-log-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
+
+.cpl-table-container {
+    border: 1px solid #c8d8e6; 
+    border-radius: 8px;
+    overflow: hidden; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Table Header Row */
+.cpl-table-header-row {
+    display: grid;
+    /* Column widths directly from image proportions */
+    /* Date, Time, Action | Problems Identified... | Signature | Qualification | Actions */
+    grid-template-columns: 2fr 5fr 1.5fr 1.5fr 0.5fr; /* Added column for actions */
+    background-color: #e9eff4; 
+    padding: 12px 15px;
+    border-bottom: 2px solid #ced4da;
+    font-weight: 700;
+    color: #495057;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.cpl-header-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px; 
+    /* Add internal column dividers */
+    border-right: 1px solid #d0dbe4;
+}
+.cpl-header-item:last-child {
+    border-right: none;
+}
+
+/* Specific Header Alignment */
+.cpl-date-time-action-header, .cpl-signature-header, .cpl-qualification-header, .cpl-action-col-header {
+    justify-content: center;
+}
+.cpl-problems-header {
+    justify-content: flex-start; 
+    padding-left: 10px;
+}
+
+/* Table Body Rows */
+.cpl-table-body {
+    background-color: #ffffff;
+}
+
+.cpl-data-row {
+    display: grid;
+    grid-template-columns: 2fr 5fr 1.5fr 1.5fr 0.5fr; /* Match header columns */
+    border-bottom: 1px solid #e0e0e0; /* Internal horizontal row dividers */
+}
+
+.cpl-data-row:last-child {
+    border-bottom: none; 
+}
+
+.cpl-data-cell {
+    padding: 10px 15px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    border-right: 1px solid #e0e0e0; /* Internal vertical column dividers */
+}
+
+.cpl-data-cell:last-child {
+    border-right: none;
+}
+
+/* Specific Cell Styling */
+.cpl-date-time-action-cell {
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px; 
+}
+
+.cpl-datetime-display {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 5px;
+    padding-top: 5px;
+}
+
+.cpl-action-dropdown,
+.cpl-qualification-dropdown {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d0dbe4;
+    border-radius: 5px;
+    font-size: 0.9em;
+    background-color: #f8fbfd;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%232c3e50%22%20d%3D%22M287%20197.8L146.2%2057%205.4%20197.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 0.65em auto;
+    padding-right: 30px;
+}
+
+.cpl-action-dropdown:focus,
+.cpl-qualification-dropdown:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+.cpl-problems-cell {
+    align-items: flex-start; 
+    justify-content: flex-start;
+    padding-left: 15px; 
+    min-height: 100px; 
+}
+
+.cpl-notes-textarea {
+    width: 100%;
+    height: 100%; 
+    min-height: 80px; 
+    padding: 10px;
+    border: 1px solid #d0dbe4;
+    border-radius: 5px;
+    font-size: 0.95em;
+    resize: vertical; 
+    background-color: #f8fbfd;
+}
+
+.cpl-notes-textarea:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* Signature Canvas Cell Styling */
+.cpl-signature-canvas-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Distribute items vertically */
+    gap: 5px; /* Space between canvas, input, and button */
+    min-height: 150px; /* Ensure enough space for canvas */
+    padding-top: 5px; /* Adjust padding for canvas */
+    padding-bottom: 5px;
+}
+
+.cpl-signature-canvas {
+    border: 1px solid #d0dbe4;
+    border-radius: 4px;
+    background-color: white;
+    width: 95%; /* Make canvas responsive within its cell */
+    height: 80px; /* Fixed height for signature area */
+    touch-action: none; /* Prevent scrolling on touch devices */
+}
+
+.cpl-signature-text-input {
+    width: 95%; /* Adjust width to match canvas */
+    padding: 6px 8px;
+    border: 1px solid #d0dbe4;
+    border-radius: 4px;
+    font-size: 0.85em;
+    text-align: center;
+    background-color: #f8fbfd;
+}
+
+.cpl-clear-signature-btn {
+    background-color: #95a5a6; /* Gray for clear */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.cpl-clear-signature-btn:hover:not(:disabled) {
+    background-color: #7f8c8d;
+}
+
+.cpl-clear-signature-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cpl-qualification-cell {
+    align-items: center;
+    justify-content: center;
+}
+
+.cpl-row-actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cpl-remove-row-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 0.85em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.cpl-remove-row-btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+
+/* --- 4. Action Buttons --- */
+.cpl-add-row-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cpl-add-row-btn {
+    background-color: #2ecc71; 
+    color: white;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cpl-add-row-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-1px);
+}
+
+.cpl-submit-section {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #e0e0e0;
+}
+
+.cpl-submit-action-btn { 
+    background-color: #3498db; 
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 15px 35px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.cpl-submit-action-btn:hover {
+    background-color: #2980b9;
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+}
+
+/* --- 5. Toast Notification --- */
+.cpl-custom-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    color: white;
+    font-weight: 600;
+    z-index: 1000;
+}
+
+.cpl-toast-success {
+    background-color: #2ecc71;
+}
+
+.cpl-toast-icon {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+/* FILE: ClinicalProgressLogUnique.css (ADD THESE STYLES TO THE END) */
+
+/* ------------------------------------------------ */
+/* 5. HISTORY/DISPLAY TABLE STYLING */
+/* ------------------------------------------------ */
+
+.cpl-display-history-section {
+    margin-top: 40px;
+}
+
+.cpl-table-wrapper {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.cpl-table-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.cpl-summary-table-container {
+    overflow-x: auto; /* Ensures table is scrollable on small screens */
+}
+
+.cpl-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cpl-summary-table thead th {
+    background-color: #34495e; /* Darker blue header */
+    color: white;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.cpl-summary-table tbody td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ecf0f1;
+    color: #555;
+    vertical-align: top;
+    font-size: 0.9rem;
+}
+
+.cpl-summary-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.cpl-summary-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.cpl-no-records-message {
+    text-align: center;
+    padding: 20px;
+    color: #95a5a6;
+    font-style: italic;
+}
+
+.cpl-signature-indicator {
+    display: block;
+    font-size: 0.8em;
+    color: #27ae60;
+    font-weight: 600;
+}
+
+
+/* --- Mobile Responsiveness for the Display Table --- */
+@media (max-width: 768px) {
+    .cpl-summary-table, .cpl-summary-table tbody, .cpl-summary-table tr, .cpl-summary-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .cpl-summary-table thead {
+        display: none; /* Hide header row on mobile */
+    }
+
+    .cpl-summary-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .cpl-summary-table td {
+        text-align: left;
+        padding: 10px 15px;
+        border-bottom: none;
+    }
+
+    /* Add label for the column on mobile */
+    .cpl-summary-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #34495e;
+        margin-right: 10px;
+        display: inline-block;
+        width: 100px; /* Adjust as needed */
+    }
+
+    /* Override for mobile labels (requires changing JSX above to include data-label attribute if needed) */
+}
+
+
+/* ================================================= */
+/* MOBILE RESPONSIVENESS (BREAKPOINTS) */
+/* ================================================= */
+
+@media (max-width: 992px) { /* Tablets and smaller desktops */
+    .cpl-table-header-row,
+    .cpl-data-row {
+        grid-template-columns: 1.8fr 4fr 1.5fr 1.5fr 0.5fr; /* Adjust column ratios */
+    }
+
+    .cpl-problems-cell,
+    .cpl-date-time-action-cell {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .cpl-signature-canvas-cell {
+        min-height: 120px; /* Smaller height for tablet canvas */
+    }
+    .cpl-signature-canvas {
+        height: 60px; /* Adjust canvas height */
+    }
+}
+
+@media (max-width: 768px) { /* Medium tablets to large phones */
+    .cpl-page-heading {
+        font-size: 1.8rem;
+    }
+
+    .cpl-table-header-row,
+    .cpl-data-row {
+        grid-template-columns: 1.5fr 3.5fr 1.5fr 1.5fr 0.5fr; /* Further adjust ratios */
+    }
+    
+    .cpl-data-cell {
+        padding: 8px 10px;
+    }
+
+    .cpl-action-dropdown,
+    .cpl-qualification-dropdown,
+    .cpl-signature-input,
+    .cpl-notes-textarea {
+        font-size: 0.85em;
+        padding: 7px;
+    }
+
+    .cpl-action-reset-btn {
+        position: static;
+        width: 100%;
+        margin-bottom: 20px;
+        font-size: 0.9em;
+        padding: 8px 15px;
+        order: -1; 
+    }
+
+    .cpl-signature-canvas-cell {
+        min-height: 100px;
+    }
+    .cpl-signature-canvas {
+        height: 50px;
+    }
+    .cpl-clear-signature-btn {
+        font-size: 0.75em;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 576px) { /* Small phones */
+    .cpl-main-wrapper {
+        width: 98%;
+        margin: 20px auto;
+    }
+    .cpl-form-paper-card {
+        padding: 15px;
+    }
+    .cpl-page-heading {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    /* Collapse the table into stacked rows */
+    .cpl-table-header-row {
+        display: none; 
+    }
+
+    .cpl-data-row {
+        display: flex; 
+        flex-direction: column;
+        border: 1px solid #c8d8e6;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+    }
+
+    .cpl-data-cell {
+        width: 100%;
+        border-right: none; 
+        border-bottom: 1px dashed #e0e0e0; 
+        padding: 10px 15px;
+        align-items: flex-start; 
+        justify-content: flex-start;
+        gap: 5px; 
+    }
+    
+    .cpl-data-cell:last-child {
+        border-bottom: none;
+    }
+
+    /* Add labels for clarity on small screens */
+    .cpl-date-time-action-cell::before { content: "Date, Time, Action:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-problems-cell::before { content: "Notes:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-signature-canvas-cell::before { content: "Signature:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-qualification-cell::before { content: "Qualification:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-row-actions-cell::before { content: "Actions:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+
+
+    .cpl-datetime-display {
+        font-size: 0.9em;
+        color: #333;
+        font-weight: 500;
+        margin-top: 5px;
+    }
+    
+    .cpl-action-dropdown,
+    .cpl-qualification-dropdown,
+    .cpl-signature-text-input, /* Corrected input class */
+    .cpl-notes-textarea {
+        width: 100%;
+        box-sizing: border-box; 
+    }
+
+    .cpl-signature-canvas-cell {
+        min-height: auto; /* Allow height to adjust */
+        padding-bottom: 10px;
+    }
+    .cpl-signature-canvas {
+        height: 60px; /* Keep a reasonable height */
+        width: 100%;
+    }
+    .cpl-clear-signature-btn {
+        margin-top: 10px; /* Add space above clear button */
+    }
+
+    .cpl-add-row-btn,
+    .cpl-submit-action-btn {
+        width: 100%;
+        font-size: 1em;
+        padding: 12px 20px;
+    }
+}
+
+/* ========================================= */
+/* MOBILE RESPONSIVENESS (for the Reset Button) */
+/* ========================================= */
+@media (max-width: 768px) {
+    /* On smaller screens, make the button appear normally above the content */
+    .cpl-reset-button-wrapper {
+        position: static; /* Put it back in the normal flow */
+        width: 100%;     /* Make it full width for easy tapping */
+        margin-bottom: 20px;
+        text-align: right;
+    }
+
+    .cpl-action-reset-btn {
+        width: auto;
+        float: right; /* Align to the right */
+    }
+}
+
+/* ================================================= */
+/* MOBILE RESPONSIVE CODE SECTION (CONSOLIDATED) */
+/* ================================================= */
+
+@media (max-width: 992px) { /* Tablets and smaller desktops */
+    /* Adjust column ratios for the main log table */
+    .cpl-table-header-row,
+    .cpl-data-row {
+        grid-template-columns: 1.8fr 4fr 1.5fr 1.5fr 0.5fr;
+    }
+
+    .cpl-problems-cell,
+    .cpl-date-time-action-cell {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    /* Adjust signature area size for tablets */
+    .cpl-signature-canvas-cell {
+        min-height: 120px;
+    }
+    .cpl-signature-canvas {
+        height: 60px;
+    }
+}
+
+@media (max-width: 768px) { /* Medium tablets to large phones */
+    /* General Layout Adjustments */
+    .cpl-page-heading {
+        font-size: 1.8rem;
+    }
+    .cpl-data-cell {
+        padding: 8px 10px;
+    }
+    .cpl-action-dropdown,
+    .cpl-qualification-dropdown,
+    .cpl-notes-textarea {
+        font-size: 0.85em;
+        padding: 7px;
+    }
+
+    /* Further adjust main log table column ratios */
+    .cpl-table-header-row,
+    .cpl-data-row {
+        grid-template-columns: 1.5fr 3.5fr 1.5fr 1.5fr 0.5fr;
+    }
+
+    /* Fix absolute positioning of Reset Button */
+    .cpl-reset-button-wrapper {
+        position: static;
+        width: 100%;
+        margin-bottom: 20px;
+        text-align: right;
+    }
+    .cpl-action-reset-btn {
+        width: auto;
+        float: right;
+        font-size: 0.9em;
+        padding: 8px 15px;
+    }
+
+    /* Adjust signature area size */
+    .cpl-signature-canvas-cell {
+        min-height: 100px;
+    }
+    .cpl-signature-canvas {
+        height: 50px;
+    }
+    .cpl-clear-signature-btn {
+        font-size: 0.75em;
+        padding: 4px 8px;
+    }
+
+    /* --- Summary Display Table Responsiveness --- */
+    /* Stacks rows into blocks, hides header, and adds data labels */
+    .cpl-summary-table, .cpl-summary-table tbody, .cpl-summary-table tr, .cpl-summary-table td {
+        display: block;
+        width: 100%;
+    }
+    .cpl-summary-table thead {
+        display: none;
+    }
+    .cpl-summary-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .cpl-summary-table td {
+        text-align: left;
+        padding: 10px 15px;
+        border-bottom: none;
+    }
+    .cpl-summary-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #34495e;
+        margin-right: 10px;
+        display: inline-block;
+        width: 100px; /* Ensures label aligns nicely */
+    }
+}
+
+@media (max-width: 576px) { /* Small phones (Collapses the main log table) */
+    /* Container/Card Adjustments */
+    .cpl-main-wrapper {
+        width: 98%;
+        margin: 20px auto;
+    }
+    .cpl-form-paper-card {
+        padding: 15px;
+    }
+    .cpl-page-heading {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    /* Collapse the main log table into stacked rows */
+    .cpl-table-header-row {
+        display: none; /* Hide header row */
+    }
+    .cpl-data-row {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #c8d8e6;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+    }
+    .cpl-data-cell {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px dashed #e0e0e0;
+        padding: 10px 15px;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+    .cpl-data-cell:last-child {
+        border-bottom: none;
+    }
+
+    /* Add labels to main table cells */
+    .cpl-date-time-action-cell::before { content: "Date, Time, Action:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-problems-cell::before { content: "Notes:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-signature-canvas-cell::before { content: "Signature:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-qualification-cell::before { content: "Qualification:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    .cpl-row-actions-cell::before { content: "Actions:"; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+
+
+    .cpl-datetime-display {
+        font-size: 0.9em;
+        color: #333;
+        font-weight: 500;
+        margin-top: 5px;
+    }
+
+    /* Full-width inputs and textareas */
+    .cpl-action-dropdown,
+    .cpl-qualification-dropdown,
+    .cpl-signature-text-input,
+    .cpl-notes-textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Full-width action buttons */
+    .cpl-add-row-btn,
+    .cpl-submit-action-btn {
+        width: 100%;
+        font-size: 1em;
+        padding: 12px 20px;
+    }
+
+    /* Final signature area size for small phones */
+    .cpl-signature-canvas-cell {
+        min-height: auto;
+        padding-bottom: 10px;
+    }
+    .cpl-signature-canvas {
+        height: 60px;
+        width: 100%;
+    }
+    .cpl-clear-signature-btn {
+        margin-top: 10px;
+    }
+}

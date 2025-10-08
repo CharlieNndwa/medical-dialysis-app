@@ -1,0 +1,99 @@
+/* FILE: Header.css (FULL CORRECTED CODE - Search Bar Styling Adjusted for Dark Header) */
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem; 
+  /* Removed background-color and box-shadow here, as AppBar component handles it */
+  position: sticky; 
+  top: 0; 
+  z-index: 1000; 
+}
+
+/* 🎯 NEW/UPDATED: Media Query for Mobile Screens (max-width 600px) */
+@media (max-width: 600px) {
+    .app-header-toolbar {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        align-items: center;
+    }
+
+    .header-search-box {
+        margin: 0 8px;
+        flex-grow: 1; 
+        max-width: 65%; 
+    }
+
+    .search-input-container {
+        padding: 6px 10px;
+        min-width: 100px; 
+    }
+
+    .search-input-container .MuiInputBase-input {
+        font-size: 0.85rem !important; 
+    }
+
+    .search-input-container svg {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+}
+
+
+/* --- Original Desktop/Base Styles --- */
+.header-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-user-info span {
+  font-weight: 500;
+  /* This text is now white via MUI in Header.js, keeping CSS generic */
+}
+
+.header-user-info .MuiButton-root {
+  font-weight: 600;
+}
+
+
+.search-input-container {
+    display: flex;
+    align-items: center;
+    /* 🎯 COLOR CHANGE: Using a slightly lighter blue or grey for contrast against #2c3e50 */
+    background-color: #8c959e; /* Lighter shade of the header blue for contrast */
+    padding: 8px 15px;
+    border-radius: 25px; 
+    width: 100%;
+    max-width: 450px; 
+    transition: all 0.3s ease;
+    /* Border should be lighter for contrast */
+    border: 1px solid #7f8c8d; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Increased shadow for lift */
+    position: relative;
+}
+
+.search-input-container:hover {
+    background-color: #4a6582; /* Slightly brighter on hover */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
+    border-color: #bdc3c7; 
+}
+
+/* Style the MUI InputBase component */
+.search-input-container .MuiInputBase-root {
+    /* Input text color is now set to white in Header.js */
+    font-size: 1rem;
+    padding: 0;
+}
+
+.search-input-container .MuiInputBase-input {
+    padding: 0;
+}
+
+/* Style the Search Icon */
+.search-input-container svg {
+    /* Icon color is now set to white in Header.js */
+    font-size: 1.25rem;
+    margin-right: 10px;
+}
