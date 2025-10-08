@@ -30,9 +30,8 @@ const saveHemodialysisRecord = async (req, res) => {
         dialyzerType,
         bloodFlowRate,
         dialysateFlowRate,
-        staffInitials,
+        // staffInitials, <--- REMOVED THIS LINE
         notes,
-        // 🎯 FIX: Ensure these are correctly destructured from the request body
         diagnosis, 
         timeOn,    
         timeOff,   
@@ -41,33 +40,28 @@ const saveHemodialysisRecord = async (req, res) => {
     try {
         const query = `
             INSERT INTO hemodialysis_records (
-                patient_id, session_date, pre_weight, post_weight, 
-                duration_hours, dialyzer_type, blood_flow_rate, 
-                dialysate_flow_rate, staff_initials, notes, 
-                diagnosis, time_on, time_off /* 🎯 CRITICAL: Only 13 columns now */
-            )
-            VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                $11, $12, $13 /* 🎯 CRITICAL: Only 13 placeholders now */
-            )
+                patient_id, session_date, pre_weight, post_weight, duration_hours,
+                dialyzer_type, blood_flow_rate, dialysate_flow_rate, 
+                notes, diagnosis, time_on, time_off 
+                -- ^^^^^^^^^^^^^^^ staff_initials REMOVED from column list
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
             RETURNING *;
         `;
         
         const values = [
-            patientId,
+            patientId, 
             formatDate(dialysisDate), 
-            preWeight,
-            postWeight,
-            durationHours,
-            dialyzerType,
-            bloodFlowRate,
-            dialysateFlowRate,
-            staffInitials,
-            notes,
-            // 🎯 FIX: Add the new values in the correct order
+            preWeight, 
+            postWeight, 
+            durationHours, 
+            dialyzerType, 
+            bloodFlowRate, 
+            dialysateFlowRate, 
+            // staffInitials, <--- REMOVED THIS LINE
+            notes, 
             diagnosis, 
-            timeOn,    
-            timeOff,   
+            timeOn, 
+            timeOff
         ];
 
         // Ensure notes is not undefined (PostgreSQL can handle null/empty string, but safer to check)

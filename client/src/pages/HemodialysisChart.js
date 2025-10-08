@@ -403,7 +403,7 @@ const handleSubmit = async (e) => {
       dialyzerType: formData.dialyzer,
       bloodFlowRate: formData.bloodPumpSpeedQb,
       dialysateFlowRate: formData.dialysateSpeedQd,
-      staffInitials: formData.disconnectedBy, // This is the field that was causing the VARCHAR(10) error
+      // staffInitials: formData.disconnectedBy, <--- REMOVED THIS LINE
       
       // NEW FIELDS MAPPING 
       diagnosis: formData.diagnosis,
