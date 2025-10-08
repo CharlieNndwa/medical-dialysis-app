@@ -364,24 +364,26 @@ const fetchPatientDetails = useCallback(async (id) => {
 
 
 // ---------------------------------------------
-// 🎯 CRITICAL FIX: The handleSubmit function (Post-Submit Clear Logic)
+// 🎯 FINAL CORRECTED: The handleSubmit function (Includes Error Toast Fix)
 // ---------------------------------------------
 const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!selectedPatientId) {
+      // Use setSaveSuccess(true) to ensure the toast component becomes visible
       setApiError('Please search for and select a Patient ID before saving the record.');
       setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 5000); // Clear after 5s
       return;
     }
 
     setLoading(true);
-    setSaveSuccess(false);
-    setApiError(null);
+    setSaveSuccess(false); // Reset success state
+    setApiError(null);     // Reset error state
 
     const currentToken = localStorage.getItem('token'); 
     
-    // ... (omitted token check logic)
+    // NOTE: Add token check logic here if it was omitted
     
     const postConfig = { 
         headers: {
@@ -390,10 +392,8 @@ const handleSubmit = async (e) => {
         }
     };
     
-    // The correct URL for saving a record
     const url = `${HEMODIALYSIS_API_URL}/${selectedPatientId}/record`;
     
-    // 🎯 CRITICAL FIX: Map necessary fields for the payload
     const payload = {
       patientId: selectedPatientId,
       
@@ -403,9 +403,9 @@ const handleSubmit = async (e) => {
       dialyzerType: formData.dialyzer,
       bloodFlowRate: formData.bloodPumpSpeedQb,
       dialysateFlowRate: formData.dialysateSpeedQd,
-      staffInitials: formData.disconnectedBy, 
+      staffInitials: formData.disconnectedBy, // This is the field that was causing the VARCHAR(10) error
       
-      // NEW FIELDS MAPPING to match hemodialysis_records columns
+      // NEW FIELDS MAPPING 
       diagnosis: formData.diagnosis,
       timeOn: formData.timeOn,
       timeOff: formData.timeOff,
@@ -413,8 +413,8 @@ const handleSubmit = async (e) => {
       // Matching/Required Fields
       preWeight: formData.preWeight,
       postWeight: formData.postWeight,
-      notes: '', 
-      // ... include all other required fields for the save endpoint
+      notes: formData.notes || '', // Ensure notes is included
+      // Add signatureData: sigCanvas.current.toDataURL() if needed by the controller
     };
 
 
@@ -422,29 +422,40 @@ const handleSubmit = async (e) => {
       // 🎯 CORRECT: Sending POST request
       await axios.post(url, payload, postConfig); 
 
-      // Handle success
+      // --- HANDLE SUCCESS ---
       setApiError(null);
-      setSaveSuccess(true);
+      setSaveSuccess(true); // Show SUCCESS toast
+      
       // Re-fetch the entire record list to update the summary table
       await fetchSummaryRecords(selectedPatientId); 
 
-      // 🎯 FIX: Clear the form, but preserve pre-filled patient master data (name, age)
+      // FIX: Clear the form, but preserve patient master data
       setFormData(prev => ({ 
         ...initialFormData,
-        // Preserve the data that was successfully pre-filled by the search function
         name: selectedPatientData.name || '', 
         age: selectedPatientData.age || '',
-        // All other form fields are reset via ...initialFormData
       }));
       if (sigCanvas.current) sigCanvas.current.clear();
 
     } catch (error) {
-      // ... (omitted error handling)
+      // --- HANDLE ERROR ---
+      const serverMessage = error.response?.data?.message || error.message || 'An unknown error occurred.';
+      
+      // 🎯 CRITICAL FIX: Set setApiError to show the message, and setSaveSuccess(true) to make the toast visible.
+      setApiError(`Save Failed: ${serverMessage}. You may need to restart your server to apply database schema changes.`); 
+      setSaveSuccess(true); // Trigger the toast (which displays either success or error)
+      
+      console.error('Error saving record:', error.response?.data || error.message);
+
     } finally {
       setLoading(false);
-      setTimeout(() => setSaveSuccess(false), 5000);
+      // This timeout now correctly clears both success and error toasts after 5 seconds
+      setTimeout(() => {
+          setSaveSuccess(false);
+          setApiError(null);
+      }, 5000); 
     }
-}; 
+};
 
   const renderInputField = (label, name, type = 'text', options = []) => (
     <div className="hd-input-group">
