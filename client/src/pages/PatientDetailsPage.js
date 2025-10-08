@@ -19,7 +19,10 @@ import './PatientDetails.css';
 import ToastNotification from './ToastNotification';
 
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/patients'; // Assuming port 5000
+// 🎯 FIX 1: Define the server root and combine it with the specific API route.
+// This ensures the POST request always goes to [ROOT]/api/patients
+const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000'; 
+const PATIENT_API_URL = `${API_SERVER_ROOT}/api/patients`; // This is the correct, full endpoint
 
 // Mock data for dropdowns (UNCHANGED)
 const accessTypes = ['AV Fistula', 'Graft', 'Catheter', 'Other'];
@@ -117,7 +120,7 @@ const PatientDetailsPage = () => {
         setTableLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(API_BASE_URL, {
+            const response = await axios.get(PATIENT_API_URL, {
                 headers: { 'x-auth-token': token },
             });
 
@@ -277,23 +280,29 @@ const PatientDetailsPage = () => {
 
 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setToast({ open: false, message: '', severity: '' });
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setToast({ open: false, message: '', severity: '' });
 
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post(API_BASE_URL, formData, {
-                headers: { Authorization: `Bearer ${token}` }
+    try {
+        const token = localStorage.getItem('token');
+        // Assuming API_BASE_URL points to your patient creation endpoint
+        const response = await axios.post(PATIENT_API_URL, formData, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // 🎯 FIX 1: Read the ID correctly from the response object (response.data.patientId)
+        const newPatientId = response.data.patientId; 
+        const newPatientName = formData.fullName; // Grab the name from the form data itself
+
+        // 🎯 FIX 2: Only show success toast and run side-effects if the POST was successful (status 201 or 200)
+        if (response.status === 201 || response.status === 200) {
+            setToast({ 
+                open: true, 
+                message: `New Patient Record for ${newPatientName} (ID: ${newPatientId}) saved successfully!`, 
+                severity: 'success' 
             });
-            
-            // 🎯 FIX 1: Read the ID correctly from the response object (response.data.patientId)
-            const newPatientId = response.data.patientId; 
-            const newPatientName = formData.fullName; // Grab the name from the form data itself
-
-            // 🎯 FIX 2: Only show success toast if the POST was successful (status 201)
-            setToast({ open: true, message: `New Patient Record for ${newPatientName} (ID: ${newPatientId}) saved successfully!`, severity: 'success' });
 
             // CRITICAL: Update the summary table and select the new patient
             fetchAllPatients();
@@ -301,19 +310,26 @@ const PatientDetailsPage = () => {
             setSelectedPatientName(`ID ${newPatientId}`); 
 
             setFormData(initialFormData);
-
-        } catch (error) {
-            // ... (existing error handling for failed save)
-            console.error('Error saving patient record:', error.response?.data || error.message);
+        } else {
+            // Handle unexpected successful status codes (e.g., 204 No Content)
             setToast({
                 open: true,
-                message: error.response?.data?.error || 'Failed to save patient record. Please check the console.',
-                severity: 'error'
+                message: 'Patient saved, but received an unusual server response status.',
+                severity: 'warning'
             });
-        } finally {
-            setLoading(false);
         }
-    };
+    } catch (error) {
+        // ... (existing error handling for failed save)
+        console.error('Error saving patient record:', error.response?.data || error.message);
+        setToast({
+            open: true,
+            message: error.response?.data?.error || 'Failed to save patient record. Please check the console.',
+            severity: 'error'
+        });
+    } finally {
+        setLoading(false);
+    }
+};
 
 
 
