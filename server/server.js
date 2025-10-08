@@ -31,7 +31,7 @@ app.use(express.json());
 // ------------------------------------------------
 
 // 🎯 FIX 1: The /auth route must match the client exactly (no /api prefix)
-app.use('/auth', authRoutes); 
+app.use('/auth', authRoutes); // FIX: Changed from /api/auth
 
 // Note: Other routes still use /api/ for different client calls/logic
 app.use('/api/patients', patientRoutes);
