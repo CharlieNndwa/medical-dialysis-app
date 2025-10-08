@@ -144,22 +144,17 @@ const getPatientDetailsForChart = async (req, res) => {
      try {
         const query = `
             SELECT 
-                pmr.patient_id, 
-                pmr.full_name AS name,
-                pmr.age,                     
-                pmr.address,                 
-                pmr.contact_details,          
-                pmr.gender,
-                
-                -- CRITICAL FIX: Change column name from 'dialyzer' to 'dialyser' (or 'dialysis_dialyzer', check schema)
-                pmr.height,                   
-                pmr.dialyser AS dialyzer,     
-                pmr.access_type,
-                pmr.diagnosis                 
+                patient_id, 
+                full_name AS name,
+                /* surname, diagnosis, height, access_type, dialyzer ARE NOT IN THE QUERY BELOW TO PREVENT CRASH */
+                age,                     /* Field from patient_master_records */
+                address,                 /* Field from patient_master_records */
+                contact_details,          /* Field from patient_master_records */
+                gender                   /* Field from patient_master_records */
             FROM 
-                patient_master_records pmr
+                patient_master_records
             WHERE 
-                pmr.patient_id = $1 AND pmr.user_id = $2;
+                patient_id = $1 AND user_id = $2;
         `;
 
         // Use 'pool' directly
