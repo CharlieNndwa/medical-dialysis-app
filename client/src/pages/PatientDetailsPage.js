@@ -30,6 +30,7 @@ const buffers = ['Bicarbonate', 'Acetate'];
 const anticoagulants = ['Heparin', 'Citrate', 'None'];
 const reminderPeriods = ['1 Week', '2 Weeks', '1 Month', '3 Months'];
 
+
 const initialFormData = {
     // Patient Demographics
     fullName: '', address: '', contactDetails: '', nextOfKin: '', age: '', height: '', weight: '',
@@ -50,10 +51,15 @@ const initialFormData = {
 // --- Sub-Component: PatientSummaryTable (New Component) ---
 // This component displays all patients and allows selection.
 const PatientSummaryTable = ({ records, onSelectPatient }) => {
+    // 🎯 FIX 1: Create a safe array. If 'records' is null/undefined, use [] instead.
+    const patientRecords = Array.isArray(records) ? records : [];
+    
     return (
         <div className="patient-summary-table-container">
             <h3 className="summary-title"><FaUsers /> Existing Patient Records</h3>
-            {records.length === 0 ? (
+            
+            {/* 🎯 FIX 2: Use the safe array for length check */}
+            {patientRecords.length === 0 ? (
                 <p className="no-records-message">No patient records found. Start by saving a new one!</p>
             ) : (
                 <div className="summary-table-wrapper">
@@ -67,15 +73,15 @@ const PatientSummaryTable = ({ records, onSelectPatient }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {records.map((record) => (
-                                <tr key={record.id}> {/* FIX 1A: Use record.id for key */}
-                                    <td data-label="ID">{record.id}</td> {/* FIX 1B: Display record.id */}
+                            {/* 🎯 FIX 3: Map over the safe array */}
+                            {patientRecords.map((record) => (
+                                <tr key={record.id}> 
+                                    <td data-label="ID">{record.id}</td> 
                                     <td data-label="Name">{record.full_name}</td>
                                     <td data-label="Contact">{record.contact_details}</td>
                                     <td data-label="Action">
                                         <button
                                             className="action-select-btn"
-                                            // FIX 1C: Pass record.id to the handler
                                             onClick={() => onSelectPatient(record.id, record.full_name)}
                                         >
                                             View Details
@@ -107,32 +113,47 @@ const PatientDetailsPage = () => {
     
    
     
-
-
-    
-
-    // --- Data Fetching Logic (All Patients) ---
     const fetchAllPatients = useCallback(async () => {
         setTableLoading(true);
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(API_BASE_URL, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { 'x-auth-token': token },
             });
-            // Assuming your backend GET /api/patients returns an array of all patients
-            setAllPatients(response.data);
+
+            // 🎯 CRITICAL FIX 1: Safely access patient records from the response. 
+            // Assume the data might be in response.data.rows (if coming from pg/node) or response.data.
+            // If the structure is non-standard or missing, default to an empty array [].
+            const fetchedRecords = response.data?.rows || response.data || [];
+            
+            // 🎯 CRITICAL FIX 2: Ensure we only set the state if it's an array
+            if (Array.isArray(fetchedRecords)) {
+                setAllPatients(fetchedRecords);
+            } else {
+                console.error("API response was not an array:", fetchedRecords);
+                setAllPatients([]); // Fallback to empty array
+            }
         } catch (error) {
-            console.error('Error fetching all patient records:', error);
-            // Show an error toast if fetch fails
-            setToast({ open: true, message: 'Failed to load patient list.', severity: 'error' });
+            console.error('Error fetching patients:', error);
+            
+            // 🎯 CRITICAL FIX 3: On any API error, set the state to an empty array.
+            setAllPatients([]); 
+            
+            setToast({
+                open: true,
+                message: 'Failed to load patient records. Check server connection.',
+                severity: 'error'
+            });
         } finally {
             setTableLoading(false);
         }
-    }, [setAllPatients, setTableLoading]);
+    }, [setToast]); 
 
+    // UseEffect to fetch data on component mount
     useEffect(() => {
         fetchAllPatients();
-    }, [fetchAllPatients]);
+    }, [fetchAllPatients]); // fetchAllPatients is guaranteed to be stable thanks to useCallback
+
 
     // Handler to select a patient from the table
     const handleSelectPatient = (id, fullName) => { // FIX 2: Handler now receives 'id'
