@@ -682,3 +682,190 @@
         padding: 10px;
     }
 }
+
+/* ========================================= */
+/* MOBILE RESPONSIVENESS ADDITIONS */
+/* (Mobile-First Base Overrides and Desktop Media Query) */
+/* ========================================= */
+
+/* --- A. Mobile-First Adjustments (Overrides to existing desktop styles) --- */
+/* Forces form fields to stack and buttons to be full width on small screens */
+
+.hd-chart-main-wrapper { 
+    /* Reduce page width/margin for mobile screens */
+    width: 98%; 
+    margin: 15px auto; 
+    padding: 0 5px; 
+}
+
+.hd-page-heading { 
+    /* Reduce heading size and stack items */
+    font-size: 1.6rem; 
+    flex-direction: column; 
+    align-items: flex-start;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+}
+
+.hd-form-paper-card { 
+    /* Reduce card padding for mobile screens */
+    padding: 15px; 
+}
+
+/* CRITICAL: Force the form grid into a stacked layout on mobile */
+.hd-form-grid {
+    display: flex;
+    flex-direction: column; 
+    gap: 15px; /* Space between stacked fields */
+}
+
+/* Ensure all children of the grid take full width on mobile */
+.hd-form-grid > * {
+    width: 100% !important; 
+    margin: 0 !important; 
+}
+
+/* CRITICAL: Stack action buttons */
+.hd-action-buttons {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+.hd-action-buttons button,
+.hd-action-buttons .submit-btn-styled {
+    width: 100%; /* Full width buttons */
+    font-size: 1rem;
+    padding: 12px;
+}
+
+
+/* --- B. Summary Display Table Responsibility (Stacking for Mobile) --- */
+
+.hd-summary-table-container {
+    overflow-x: auto; /* Allows horizontal scroll for the table itself if table is too wide */
+    padding: 5px;
+}
+
+/* Force table elements to display as blocks to stack on mobile */
+.hd-summary-table, 
+.hd-summary-table tbody, 
+.hd-summary-table tr, 
+.hd-summary-table td {
+    display: block;
+    width: 100%;
+}
+
+/* Hide the desktop header row */
+.hd-summary-table thead {
+    display: none; 
+}
+
+.hd-summary-table tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.hd-summary-table td {
+    text-align: right; 
+    padding-left: 50%; /* Make space for the new label */
+    position: relative;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    white-space: normal; /* Allow content to wrap */
+    min-height: 40px; 
+    box-sizing: border-box;
+}
+
+/* Create the label from the data-label attribute (Requires data-label on your <td> tags) */
+.hd-summary-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.85rem; 
+}
+
+
+/* --- C. DESKTOP/TABLET BREAKPOINT (Resetting styles for larger screens) --- */
+@media (min-width: 769px) {
+    
+    /* Reset main container and heading for larger screens */
+    .hd-chart-main-wrapper {
+        width: 95%;
+        margin: 30px auto;
+        padding: 0;
+    }
+    .hd-page-heading {
+        font-size: 2.2rem; 
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: 12px;
+        margin-bottom: 30px; 
+    }
+    
+    .hd-form-paper-card {
+        padding: 30px;
+        border-radius: 10px;
+    }
+
+    /* Reset the form grid to its intended multi-column layout (e.g., using a 12-column grid) */
+    .hd-form-grid {
+        display: grid; 
+        grid-template-columns: repeat(12, 1fr); 
+        gap: 20px 30px; 
+    }
+
+    /* Reset button stacking */
+    .hd-action-buttons {
+        flex-direction: row; 
+        justify-content: flex-end;
+    }
+    .hd-action-buttons button,
+    .hd-action-buttons .submit-btn-styled {
+        width: auto; 
+    }
+
+    /* Reset Table to Standard Desktop Display */
+    .hd-summary-table, 
+    .hd-summary-table tbody, 
+    .hd-summary-table tr, 
+    .hd-summary-table td {
+        display: table-row; 
+        width: auto;
+    }
+    
+    .hd-summary-table thead {
+        display: table-header-group; /* Show header again */
+    }
+
+    .hd-summary-table tr {
+        margin-bottom: 0;
+        border: none;
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 0;
+    }
+
+    .hd-summary-table td {
+        text-align: left;
+        padding-left: 15px; 
+        position: static;
+        border: none;
+        border-bottom: none; 
+    }
+
+    /* Remove the mobile pseudo-element label */
+    .hd-summary-table td::before {
+        content: none;
+    }
+}
