@@ -452,7 +452,7 @@ const PatientDetailsPage = () => {
             <div className="patient-form-paper">
                 <motion.button
                     type="button"
-                    className="hd-action-reset-btn"
+                    className="global-reset-btn"
                     onClick={handleReset}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
