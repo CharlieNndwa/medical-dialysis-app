@@ -498,335 +498,53 @@
     color: #555;
 }
 
-/* Mobile Responsiveness (Adapted from PatientDetails.css) */
-@media (max-width: 768px) {
-    .hd-summary-table-container {
-        padding: 15px;
-    }
-    
-    .hd-summary-table, .hd-summary-table tbody, .hd-summary-table tr, .hd-summary-table td {
-        display: block;
-        width: 100%;
-    }
-    
-    .hd-summary-table thead {
-        display: none; /* Hide header row on mobile */
-    }
-
-    .hd-summary-table tr {
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-    
-    .hd-summary-table td {
-        text-align: right;
-        padding-left: 50%; 
-        position: relative;
-        border: none;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    .hd-summary-table td:last-child {
-        border-bottom: none;
-    }
-
-    /* Data label pseudo-element for mobile */
-    .hd-summary-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 20px;
-        width: calc(50% - 30px);
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: 700;
-        color: #34495e;
-    }
-}
-
-/* ======================================================== */
-/* MEDIA QUERIES FOR MOBILE DEVICES (<= 768px) */
-/* Targets devices like Samsung A04, iPhone XR, etc. */
-/* ======================================================== */
-
-@media (max-width: 768px) {
-    /* --- 1. Main Layout Adjustments --- */
-    .hd-chart-main-wrapper {
-        margin: 15px auto; /* Reduce margin */
-        width: 98%; /* Increase width for max screen use */
-        padding: 0 5px; /* Add small horizontal padding */
-    }
-
-    .hd-page-heading {
-        font-size: 1.6rem; /* Smaller heading */
-        margin-bottom: 20px;
-        flex-direction: column; /* Stack icons/text if needed */
-        align-items: flex-start;
-    }
-    
-    /* --- 2. Form Card and Grid System --- */
-    .hd-form-paper-card {
-        padding: 15px; /* Reduce padding inside the form card */
-    }
-
-    /* Target the main form grid/layout container */
-    .hd-form-grid {
-        /* Reset any large desktop grid layouts to a single column */
-        display: flex;
-        flex-direction: column;
-        gap: 15px; /* Space between stacked fields */
-    }
-
-    /* Make all form elements full width and stack */
-    .hd-form-grid > * {
-        width: 100% !important; /* Force all grid items to full width */
-        margin: 0 !important; /* Remove unwanted margins from specific grid items */
-    }
-
-    /* Section Headers */
-    .hd-form-grid .section-header {
-        font-size: 1.1rem;
-        padding-top: 15px;
-        margin-bottom: 5px;
-        border-bottom: 2px solid #3498db;
-    }
-
-    /* --- 3. Input and Field Styling --- */
-    .hd-input-group {
-        margin-bottom: 15px; /* Ensure input groups are vertically spaced */
-    }
-
-    /* Fix for select/dropdowns */
-    .hd-select-styled, .hd-input-styled {
-        padding: 10px;
-        font-size: 0.95rem;
-    }
-
-    /* --- 4. Action Buttons (Save/Reset) --- */
-    .hd-action-buttons {
-        flex-direction: column; /* Stack buttons vertically */
-        gap: 10px;
-        margin-top: 20px;
-    }
-    .hd-action-buttons button,
-    .hd-action-buttons .submit-btn-styled {
-        width: 100%; /* Full width buttons for easy tapping */
-        font-size: 1rem;
-        padding: 12px;
-    }
-
-    /* --- 5. Hemodialysis Table (Critical Mobile Fix) --- */
-    /* Convert the table layout to stack vertically */
-    .hd-summary-table-container {
-        overflow-x: auto; /* Allow horizontal scroll for large tables if needed */
-        padding: 5px;
-    }
-    
-    /* Force table to be block elements to stack properly */
-    .hd-summary-table, 
-    .hd-summary-table tbody, 
-    .hd-summary-table tr, 
-    .hd-summary-table td {
-        display: block;
-        width: 100%;
-    }
-
-    /* Hide the header row (since content will be labeled inside cells) */
-    .hd-summary-table thead {
-        display: none; 
-    }
-
-    .hd-summary-table tr {
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-    }
-
-    .hd-summary-table td {
-        /* Align text to the right for values */
-        text-align: right; 
-        padding-left: 50%; /* Make space for the pseudo-element label */
-        position: relative;
-        border: none;
-        border-bottom: 1px solid #f0f0f0;
-        white-space: normal; /* Allow content to wrap */
-    }
-
-    /* Create the label from the data-label attribute */
-    .hd-summary-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: 600;
-        color: #555;
-    }
-
-    /* Remove the bottom border on the last cell of each row */
-    .hd-summary-table tr td:last-child {
-        border-bottom: none;
-    }
-}
-
-/* --- Optional: Smaller font size for even smaller devices (< 480px) --- */
-@media (max-width: 480px) {
-    .hd-page-heading {
-        font-size: 1.4rem;
-    }
-    .hd-form-paper-card {
-        padding: 10px;
-    }
-}
-
 /* ========================================= */
-/* MOBILE RESPONSIVENESS ADDITIONS */
-/* (Mobile-First Base Overrides and Desktop Media Query) */
+/* CRITICAL FIX: HEMODIALYSIS CHART MOBILE RESPONSIVENESS */
+/* (This block ensures all form elements stack vertically on mobile) */
 /* ========================================= */
 
-/* --- A. Mobile-First Adjustments (Overrides to existing desktop styles) --- */
-/* Forces form fields to stack and buttons to be full width on small screens */
+/* --- A. Mobile-First Adjustments (Default) --- */
 
-.hd-chart-main-wrapper { 
-    /* Reduce page width/margin for mobile screens */
-    width: 98%; 
-    margin: 15px auto; 
-    padding: 0 5px; 
-}
-
-.hd-page-heading { 
-    /* Reduce heading size and stack items */
-    font-size: 1.6rem; 
-    flex-direction: column; 
-    align-items: flex-start;
-    padding-bottom: 8px;
-    margin-bottom: 20px;
-}
-
-.hd-form-paper-card { 
-    /* Reduce card padding for mobile screens */
-    padding: 15px; 
-}
-
-/* CRITICAL: Force the form grid into a stacked layout on mobile */
+/* Ensure the main form is a column layout by default */
 .hd-form-grid {
     display: flex;
     flex-direction: column; 
-    gap: 15px; /* Space between stacked fields */
+    gap: 15px; /* Standard spacing for stacked fields */
 }
 
-/* Ensure all children of the grid take full width on mobile */
+/* Ensure all items inside the form grid take full width */
 .hd-form-grid > * {
     width: 100% !important; 
     margin: 0 !important; 
 }
 
-/* CRITICAL: Stack action buttons */
+/* Force action buttons to stack vertically */
 .hd-action-buttons {
-    display: flex;
-    flex-direction: column; /* Stack buttons vertically */
+    flex-direction: column; 
     gap: 10px;
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
 }
 .hd-action-buttons button,
 .hd-action-buttons .submit-btn-styled {
-    width: 100%; /* Full width buttons */
-    font-size: 1rem;
-    padding: 12px;
+    width: 100%; /* Full width buttons for easy tapping */
 }
 
-
-/* --- B. Summary Display Table Responsibility (Stacking for Mobile) --- */
-
+/* Ensure table container can scroll horizontally if needed, but still prioritize stacking */
 .hd-summary-table-container {
-    overflow-x: auto; /* Allows horizontal scroll for the table itself if table is too wide */
-    padding: 5px;
-}
-
-/* Force table elements to display as blocks to stack on mobile */
-.hd-summary-table, 
-.hd-summary-table tbody, 
-.hd-summary-table tr, 
-.hd-summary-table td {
-    display: block;
+    overflow-x: auto; 
     width: 100%;
 }
 
-/* Hide the desktop header row */
-.hd-summary-table thead {
-    display: none; 
-}
-
-.hd-summary-table tr {
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-}
-
-.hd-summary-table td {
-    text-align: right; 
-    padding-left: 50%; /* Make space for the new label */
-    position: relative;
-    border: none;
-    border-bottom: 1px solid #f0f0f0;
-    white-space: normal; /* Allow content to wrap */
-    min-height: 40px; 
-    box-sizing: border-box;
-}
-
-/* Create the label from the data-label attribute (Requires data-label on your <td> tags) */
-.hd-summary-table td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 10px;
-    width: 45%;
-    padding-right: 10px;
-    white-space: nowrap;
-    text-align: left;
-    font-weight: 600;
-    color: #555;
-    font-size: 0.85rem; 
-}
-
-
-/* --- C. DESKTOP/TABLET BREAKPOINT (Resetting styles for larger screens) --- */
+/* --- B. Desktop/Tablet Overrides (Min-width media query) --- */
 @media (min-width: 769px) {
-    
-    /* Reset main container and heading for larger screens */
-    .hd-chart-main-wrapper {
-        width: 95%;
-        margin: 30px auto;
-        padding: 0;
-    }
-    .hd-page-heading {
-        font-size: 2.2rem; 
-        flex-direction: row;
-        align-items: center;
-        padding-bottom: 12px;
-        margin-bottom: 30px; 
-    }
-    
-    .hd-form-paper-card {
-        padding: 30px;
-        border-radius: 10px;
-    }
-
-    /* Reset the form grid to its intended multi-column layout (e.g., using a 12-column grid) */
+    /* Reset the form grid to its intended multi-column layout on larger screens */
     .hd-form-grid {
         display: grid; 
-        grid-template-columns: repeat(12, 1fr); 
+        grid-template-columns: repeat(12, 1fr); /* Assuming a 12-column grid layout */
         gap: 20px 30px; 
+        flex-direction: initial; /* Reset back to grid logic */
     }
 
-    /* Reset button stacking */
+    /* Reset button stacking to horizontal */
     .hd-action-buttons {
         flex-direction: row; 
         justify-content: flex-end;
@@ -835,37 +553,29 @@
     .hd-action-buttons .submit-btn-styled {
         width: auto; 
     }
-
-    /* Reset Table to Standard Desktop Display */
-    .hd-summary-table, 
-    .hd-summary-table tbody, 
-    .hd-summary-table tr, 
-    .hd-summary-table td {
-        display: table-row; 
-        width: auto;
-    }
     
-    .hd-summary-table thead {
-        display: table-header-group; /* Show header again */
+    /* Reset other previously applied mobile-only styles if they conflict */
+    .hd-chart-main-wrapper {
+        width: 95%;
+        margin: 30px auto;
+        padding: 0;
     }
+    .hd-page-heading {
+        font-size: 2.2rem; 
+    }
+}
 
-    .hd-summary-table tr {
-        margin-bottom: 0;
-        border: none;
-        border-bottom: 1px solid #e0e0e0;
-        border-radius: 0;
-    }
+/* CRITICAL: Fix for the time intervals/dynamic fields breaking layout */
+/* These often use flex/grid internally, so force them to wrap/take full width on mobile */
+.hd-dynamic-field-row,
+.hd-dialysis-parameters-grid,
+.hd-time-interval-row {
+    flex-direction: column;
+    gap: 15px !important;
+    width: 100% !important;
+}
 
-    .hd-summary-table td {
-        text-align: left;
-        padding-left: 15px; 
-        position: static;
-        border: none;
-        border-bottom: none; 
-    }
-
-    /* Remove the mobile pseudo-element label */
-    .hd-summary-table td::before {
-        content: none;
-    }
+.hd-time-interval-row > *,
+.hd-dialysis-parameters-grid > * {
+    width: 100% !important;
 }

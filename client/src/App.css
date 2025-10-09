@@ -52,22 +52,23 @@ body {
 
 /* ========================================= */
 /* GLOBAL RESET/CLEAR BUTTON STYLES (App.css) */
+/* (Updated for Red/White color and higher position) */
 /* ========================================= */
 
 .global-reset-btn {
-    /* CRITICAL: Positioning */
+    /* CRITICAL: Positioning - Adjusted for higher placement */
     position: absolute;
-    top: 15px;      /* Standard spacing from the top of the container */
-    right: 15px;    /* Standard spacing from the right of the container */
-    z-index: 20;    /* Ensures it sits on top of all other elements */
+    top: -45px;      /* 🚨 ADJUSTED: Move up by 45px relative to its container's top edge */
+    right: 15px;     /* Standard spacing from the right */
+    z-index: 20;     /* Ensures it sits on top of all other elements */
     
-    /* Styling (Smaller and Black) */
-    font-size: 0.75rem; /* Small font size */
-    padding: 6px 12px;  /* Small padding */
-     border: 1px solid #c0392b; /* Dark border */
-     color: #ffffff; /* Black/Dark text */
-      background-color: #e74c3c; /* Bright red background */
- 
+    /* Styling (Red/White) */
+    font-size: 0.75rem; 
+    padding: 6px 12px; 
+    border: 1px solid #c0392b; 
+    color: #ffffff; 
+    background-color: #e74c3c; 
+    
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
@@ -76,18 +77,18 @@ body {
 }
 
 .global-reset-btn:hover {
-    background-color: #c0392b;
+    background-color: #c0392b; 
     border-color: #c0392b;
-    color: #ffffff;
+    color: #ffffff; 
 }
 
 
 /* --- Mobile Responsiveness --- */
 @media (max-width: 600px) {
     .global-reset-btn {
-        top: 10px;      /* Slightly less top margin on small screens */
-        right: 10px;    /* Slightly less right margin on small screens */
-        font-size: 0.7rem; /* Even smaller font on mobile */
-        padding: 4px 8px;  /* Reduced padding on mobile */
+        top: -40px;      /* 🚨 ADJUSTED: Move up by 40px on small screens */
+        right: 10px;     
+        font-size: 0.7rem; 
+        padding: 4px 8px; 
     }
 }
