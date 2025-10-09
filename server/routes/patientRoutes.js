@@ -76,6 +76,49 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 });
 
+// --------------------------------------------------------------------------------------
+// 🚨 CRITICAL FIX: The specific /search route MUST be defined before the general /:id route
+// --------------------------------------------------------------------------------------
+
+// GET /api/patients/search?q=queryTerm (Search by name or ID)
+router.get('/search', authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+    const queryTerm = req.query.q;
+
+    if (!queryTerm) {
+        return res.status(400).json({ error: 'Query parameter "q" is required.' });
+    }
+
+    try {
+        // Create a case-insensitive search pattern for PostgreSQL
+        const searchPattern = `%${queryTerm.toLowerCase()}%`;
+
+        // Query: Search by full_name (case-insensitive) OR by patient_id (casting to text for LIKE comparison)
+        const query = `
+            SELECT patient_id, full_name
+            FROM patient_master_records
+            WHERE user_id = $1
+            AND (
+                LOWER(full_name) LIKE $2 OR 
+                patient_id::text LIKE $2 
+            )
+            LIMIT 5; -- Limit results for efficiency
+        `;
+        
+        const result = await db.query(query, [userId, searchPattern]);
+
+        // Map the results to camelCase for the frontend
+        res.status(200).json(result.rows.map(row => ({
+            id: row.patient_id, 
+            fullName: row.full_name 
+        })));
+
+    } catch (err) {
+        console.error('Database GET /api/patients/search Error:', err);
+        res.status(500).json({ error: 'Failed to search patient records.', details: err.message });
+    }
+});
+
 
 // GET /api/patients (Fetch all patient master records for the list view) (SECURED)
 // Route: GET /api/patients
@@ -174,46 +217,6 @@ router.get('/:id', authenticateToken, async (req, res) => {
     } catch (err) {
         console.error('Database GET /api/patients/:id Error:', err);
         res.status(500).json({ error: 'Failed to fetch single patient record.', details: err.message });
-    }
-});
-
-// 🚨 NEW ROUTE: GET /api/patients/search?q=query (Search by name or ID)
-router.get('/search', authenticateToken, async (req, res) => {
-    const userId = req.user.id;
-    // The search term from the frontend comes in as 'q'
-    const queryTerm = req.query.q; 
-
-    if (!queryTerm) {
-        return res.status(400).json({ error: 'Search query parameter "q" is required.' });
-    }
-
-    try {
-        // Create a case-insensitive search pattern for PostgreSQL
-        const searchPattern = `%${queryTerm.toLowerCase()}%`;
-
-        // Query: Search by full_name (case-insensitive) OR by patient_id (casting to text for LIKE comparison)
-        const query = `
-            SELECT patient_id, full_name
-            FROM patient_master_records
-            WHERE user_id = $1
-            AND (
-                LOWER(full_name) LIKE $2 OR 
-                patient_id::text LIKE $2 
-            )
-            LIMIT 5; -- Limit results for efficiency
-        `;
-        
-        const result = await db.query(query, [userId, searchPattern]);
-
-        // Map the results to camelCase for the frontend
-        res.status(200).json(result.rows.map(row => ({
-            id: row.patient_id, 
-            fullName: row.full_name 
-        })));
-
-    } catch (err) {
-        console.error('Database GET /api/patients/search Error:', err);
-        res.status(500).json({ error: 'Failed to search patient records.', details: err.message });
     }
 });
 
