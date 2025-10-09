@@ -20,13 +20,7 @@ import dialysisIcon from '../assets/dialysis-icon.png';
 // 🚨 NEW CONSTANT: Define the API root (based on your saved config)
 const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-// Placeholder function for search logic (as requested to be fixed later)
-const handleSearch = (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    console.log("Searching for:", e.target.value);
-  }
-};
+
 
 // Define Header Height Constant for use in Sidebar.css (approximate)
 const MOBILE_HEADER_HEIGHT = '56px';
@@ -36,7 +30,11 @@ const DESKTOP_HEADER_HEIGHT = '64px';
 const Header = ({ onSidebarToggle, isSidebarCollapsed }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [foundPatient, setFoundPatient] = useState(null); // <--- 🚨 NEW STATE: To track the found patient
-  const { user, logout } = useAuth();
+    // 🚨 CRITICAL: Get the user object (which should hold the token or we get it from local storage)
+  const { user, logout } = useAuth(); // Assume user object contains token/ID
+  
+const token = localStorage.getItem('token'); 
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -44,45 +42,43 @@ const Header = ({ onSidebarToggle, isSidebarCollapsed }) => {
     navigate('/login');
   };
 
-  // 🚨 NEW ASYNC FUNCTION: Implements the search logic
-  const handleSearch = async (e) => {
-    if (e.key !== 'Enter' || !searchTerm.trim()) {
-      return;
-    }
-    e.preventDefault();
+  // 🚨 CRITICAL FIX: The handleSearch function must include the 'headers' object
+    const handleSearch = async (e) => {
+        // Only run search on Enter key press
+        if (e.key !== 'Enter' || !searchTerm.trim()) {
+            return;
+        }
+        e.preventDefault();
 
-    const query = searchTerm.trim();
+        const query = searchTerm.trim();
 
-    try {
-      // Call the new backend search endpoint: /api/patients/search?q=query
-      const response = await axios.get(`${API_SERVER_ROOT}/api/patients/search`, {
-        params: { q: query }
-      });
+        try {
+            const response = await axios.get(`${API_SERVER_ROOT}/api/patients/search`, {
+                params: { q: query },
+                // 👇 THIS IS THE CRITICAL FIX for the 401 error 👇
+                headers: {
+                    'Authorization': `Bearer ${token}` 
+                }
+            });
+            
+            // Success logic (from your previous code)
+            const patients = response.data;
+            if (patients && patients.length > 0) {
+                const p = patients[0];
+                setFoundPatient(p);
+                setSearchTerm(`Found: ${p.fullName} (ID: ${p.id})`);
+            } else {
+                setFoundPatient(null);
+                setSearchTerm(`No patient found for: ${query}`);
+            }
 
-      const results = response.data;
-
-      if (results && results.length > 0) {
-        // Found patient, update the display as requested (name and ID)
-        const patient = results[0];
-        setFoundPatient(patient);
-        // 🎯 FULFILLS USER REQUEST: Update search bar to display the result
-        setSearchTerm(`${patient.fullName} (ID: ${patient.id})`);
-
-        // 💡 UX Improvement: You can navigate to the details page here
-        // navigate(`/patient-details/${patient.id}`); 
-
-      } else {
-        // No result found
-        setSearchTerm(`No patient found for "${query}"`);
-        setFoundPatient(null);
-      }
-
-    } catch (error) {
-      console.error("Patient search failed:", error.response ? error.response.data : error.message);
-      setSearchTerm(`Error searching: ${query}`);
-      setFoundPatient(null);
-    }
-  };
+        } catch (error) {
+            console.error("Patient search failed:", error.response ? error.response.data : error.message);
+            // Revert to search term on error
+            setSearchTerm(`Search Failed. Try again.`); 
+            setFoundPatient(null);
+        }
+    };
 
   // 🚨 NEW CHANGE HANDLER: Resets state to allow for typing after a search
   const handleSearchChange = (e) => {
