@@ -183,9 +183,9 @@ const PatientSummaryTable = ({ records, onViewDetails, onSelectPatient }) => { /
 };
 
 const PatientDetailsPage = () => {
-     // 🎯 FIX: Added missing state variables to resolve ESLint errors
-    const [patientData, setPatientData] = useState(initialPatientState); 
-    const [isEditMode, setIsEditMode] = useState(false); 
+    // 🎯 FIX: Added missing state variables to resolve ESLint errors
+    const [patientData, setPatientData] = useState(initialPatientState);
+    const [isEditMode, setIsEditMode] = useState(false);
     // 🎯 NEW: State for all patient records and the currently selected patient
     const [allPatients, setAllPatients] = useState([]);
     // 🎯 FIX 1: Ensure selectedPatientId and its setter are defined
@@ -202,18 +202,18 @@ const PatientDetailsPage = () => {
     // 🎯 Missing states for Modal
     const [patientToView, setPatientToView] = useState(null); // FIX: 'patientToView' not defined
     const [isModalOpen, setIsModalOpen] = useState(false);   // FIX: 'isModalOpen'/'setIsModalOpen' not defined
-    
+
     // 🎯 Missing ref
     const formRef = useRef(null); // FIX: 'formRef' not defined
 
-    
+
 
     // 🎯 FIX 5: Define handleShowToast using useCallback
     const handleShowToast = useCallback((message, severity) => {
         setToast({ open: true, message, severity });
     }, [setToast]); // setToast is stable but kept for completeness, though linter may warn
 
-   
+
 
 
     const fetchAllPatients = useCallback(async () => {
@@ -273,11 +273,11 @@ const PatientDetailsPage = () => {
     }, [handleShowToast, setPatientToView, setIsModalOpen]); // FIX: handleViewDetails is now defined
 
 
-     // 🎯 FIX: Corrected function signature to use the 'patient' argument
     const handleSelectPatient = useCallback((patient) => {
-        // Set form data to the selected patient's data for editing
-        setPatientData(patient); 
-        setIsEditMode(true); 
+        // CRITICAL FIX: Set the fetched patient data into formData 
+        // so the inputs (which will now read from formData) display it.
+        setFormData(patient);
+        setIsEditMode(true);
         handleShowToast(`Now editing patient ID: ${patient.id}.`, 'info');
         if (formRef.current) {
             formRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -436,7 +436,7 @@ const PatientDetailsPage = () => {
         } catch (error) {
             // ... (existing error handling for failed save)
             console.error('Error saving patient record:', error.response?.data || error.message);
-             // 🎯 FIX: Used correct toast handler name
+            // 🎯 FIX: Used correct toast handler name
             handleShowToast('Failed to save patient record. Check your inputs.', 'error');
         } finally {
             setLoading(false);
@@ -477,7 +477,7 @@ const PatientDetailsPage = () => {
                                     id="fullName"
                                     name="fullName"
                                     placeholder="Patient's Full Name"
-                                    value={patientData.fullName}
+                                    value={formData.fullName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -491,7 +491,7 @@ const PatientDetailsPage = () => {
                                     id="address"
                                     name="address"
                                     placeholder="Residential Address"
-                                    value={patientData.address}
+                                    value={formData.address}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -505,7 +505,7 @@ const PatientDetailsPage = () => {
                                     id="contactDetails"
                                     name="contactDetails"
                                     placeholder="Phone/Email"
-                                    value={patientData.contactDetails}
+                                    value={formData.contactDetails}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -519,7 +519,7 @@ const PatientDetailsPage = () => {
                                     id="nextOfKin"
                                     name="nextOfKin"
                                     placeholder="Kin's Name/Contact"
-                                    value={patientData.nextOfKin}
+                                    value={formData.nextOfKin}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -533,7 +533,7 @@ const PatientDetailsPage = () => {
                                     id="age"
                                     name="age"
                                     placeholder="Years"
-                                    value={patientData.age}
+                                    value={formData.age}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -543,7 +543,7 @@ const PatientDetailsPage = () => {
                         <div className="grid-item-2">
                             <div className="input-group">
                                 <label htmlFor="gender">Gender</label>
-                                <select id="gender" name="gender" value={patientData.gender} onChange={handleChange}>
+                                <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
                                     <option value="" disabled>Select</option>
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
@@ -574,7 +574,7 @@ const PatientDetailsPage = () => {
                                     id="weight"
                                     name="weight"
                                     placeholder="e.g., 75"
-                                    value={patientData.weight}
+                                    value={formData.weight}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -585,7 +585,7 @@ const PatientDetailsPage = () => {
                             <div className="input-group">
                                 <label htmlFor="dateOfBirth">Date of Birth</label>
                                 <input type="date" id="dateOfBirth" name="dateOfBirth"
-                                    value={patientData.dateOfBirth} onChange={handleChange} />
+                                    value={formData.dateOfBirth} onChange={handleChange} />
                             </div>
                         </div>
 
@@ -600,7 +600,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="accessType"
                                     name="accessType"
-                                    value={patientData.accessType}
+                                    value={formData.accessType}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select access type</option>
@@ -617,7 +617,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="diabeticStatus"
                                     name="diabeticStatus"
-                                    value={patientData.diabeticStatus}
+                                    value={formData.diabeticStatus}
                                     onChange={handleChange}
                                 >
                                     <option value="Y">Yes</option>
@@ -632,7 +632,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="smokingStatus"
                                     name="smokingStatus"
-                                    value={patientData.smokingStatus}
+                                    value={formData.smokingStatus}
                                     onChange={handleChange}
                                 >
                                     <option value="Y">Yes</option>
@@ -652,7 +652,7 @@ const PatientDetailsPage = () => {
                             <div className="input-group">
                                 <label htmlFor="dialysisModality">Dialysis Modality</label>
                                 <select id="dialysisModality" name="dialysisModality"
-                                    value={patientData.dialysisModality}
+                                    value={formData.dialysisModality}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select modality</option>
@@ -669,7 +669,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="frequency"
                                     name="frequency"
-                                    value={patientData.frequency}
+                                    value={formData.frequency}
                                     onChange={handleChange}
                                 >
                                     {frequencies.map(f => (
@@ -688,7 +688,7 @@ const PatientDetailsPage = () => {
                                     id="prescribedDose"
                                     name="prescribedDose"
                                     placeholder="e.g., 4"
-                                    value={patientData.prescribedDose}
+                                    value={formData.prescribedDose}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -701,7 +701,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="dialyser"
                                     name="dialyser"
-                                    value={patientData.dialyser}
+                                    value={formData.dialyser}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select dialyser</option>
@@ -718,7 +718,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="buffer"
                                     name="buffer"
-                                    value={patientData.buffer}
+                                    value={formData.buffer}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select buffer</option>
@@ -737,7 +737,7 @@ const PatientDetailsPage = () => {
                                     id="qd"
                                     name="qd"
                                     placeholder="e.g., 500"
-                                    value={patientData.qd}
+                                    value={formData.qd}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -751,7 +751,7 @@ const PatientDetailsPage = () => {
                                     id="qb"
                                     name="qb"
                                     placeholder="e.g., 300"
-                                    value={patientData.qb}
+                                    value={formData.qb}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -763,7 +763,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="anticoagulant"
                                     name="anticoagulant"
-                                    value={patientData.anticoagulant}
+                                    value={formData.anticoagulant}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select anticoagulant</option>
@@ -786,7 +786,7 @@ const PatientDetailsPage = () => {
                                     type="date"
                                     id="scriptValidityStart"
                                     name="scriptValidityStart"
-                                    value={patientData.scriptValidityStart}
+                                    value={formData.scriptValidityStart}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -797,7 +797,7 @@ const PatientDetailsPage = () => {
                             <div className="input-group">
                                 <label htmlFor="scriptExpiryDate">Validity End Date</label>
                                 <input type="date" id="scriptExpiryDate" name="scriptExpiryDate"
-                                    value={patientData.scriptExpiryDate} onChange={handleChange} />
+                                    value={formData.scriptExpiryDate} onChange={handleChange} />
                             </div>
                         </div>
 
@@ -807,7 +807,7 @@ const PatientDetailsPage = () => {
                                 <select
                                     id="scriptReminder"
                                     name="scriptReminder"
-                                    value={patientData.scriptReminder}
+                                    value={formData.scriptReminder}
                                     onChange={handleChange}
                                 >
                                     {reminderPeriods.map(p => (
@@ -821,7 +821,7 @@ const PatientDetailsPage = () => {
                             {/* Alert text using a custom-styled div */}
                             <div className="custom-alert reminder-alert-style">
                                 <span className="alert-icon"><FaClock /></span>
-                                <p>Alert set: **{patientData.scriptReminder}** before expiry.</p>
+                                <p>Alert set: **{formData.scriptReminder}** before expiry.</p>
                             </div>
                         </div>
 
@@ -940,7 +940,7 @@ const PatientDetailsPage = () => {
                 onClose={handleToastClose}
             />
 
-             {/* --- 3. PATIENT DETAILS MODAL (View/Print) --- */}
+            {/* --- 3. PATIENT DETAILS MODAL (View/Print) --- */}
             <PatientDetailsModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

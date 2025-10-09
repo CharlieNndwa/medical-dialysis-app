@@ -10,6 +10,7 @@ import SignatureCanvas from 'react-signature-canvas';
 import './HemodialysisChartUnique.css';
 
 
+
 const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const HEMODIALYSIS_API_URL = `${API_SERVER_ROOT}/api/hemodialysis`;
 
