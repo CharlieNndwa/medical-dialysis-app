@@ -526,7 +526,7 @@ const handleSubmit = async (e) => {
       <div className="hd-form-paper-card">
         <motion.button
           type="button"
-          className="hd-action-reset-btn"
+          className="global-reset-btn"
           onClick={handleReset}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
