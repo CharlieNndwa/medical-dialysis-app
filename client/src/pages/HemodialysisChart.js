@@ -489,7 +489,7 @@ const handleSubmit = async (e) => {
   );
 
   return (
-    <div className="hd-chart-main-wrapper">
+    <div className="hd-chart-main-wrapper" style={{ overflowX: 'hidden' }}>
       <h1 className="hd-page-heading">Hemodialysis Records Chart <FaHeartbeat style={{ color: '#e74c3c' }} /></h1>
 
       {/* ---------------------------------------------------- */}
