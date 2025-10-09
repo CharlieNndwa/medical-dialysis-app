@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'; // 🎯
 // 🎯 UPDATE 1: Added FaDownload icon
 import {
     FaUpload,
+    FaPrint, // 🎯 USED in the Modal
     FaSpinner,
     FaClock,
     FaRedoAlt,
@@ -9,20 +10,50 @@ import {
     FaEye,
     FaTrashAlt,
     FaDownload,
-    FaUsers // <--- ADD THIS LINE
+    FaUsers, // <--- ADD THIS LINE
+
 } from 'react-icons/fa';
 import axios from 'axios';
 
 import { motion } from 'framer-motion';
-
+import PatientRecordView from './PatientRecordView';
 import './PatientDetails.css';
 import ToastNotification from './ToastNotification';
 
 
 // 🎯 FIX 1: Define the server root and combine it with the specific API route.
 // This ensures the POST request always goes to [ROOT]/api/patients
-const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000'; 
+const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const PATIENT_API_URL = `${API_SERVER_ROOT}/api/patients`; // This is the correct, full endpoint
+
+// 🎯 FIX: initialPatientState is not defined (Error Line 159)
+const initialPatientState = {
+    fullName: '',
+    dateOfBirth: '',
+    age: '',
+    gender: 'Male',
+    address: '',
+    contactDetails: '',
+    nextOfKin: '',
+    height: '',
+    weight: '',
+    accessType: 'AV Fistula',
+    diabeticStatus: 'N',
+    smokingStatus: 'N',
+    dialysisModality: 'Hemodialysis (HD)',
+    frequency: 3,
+    dialyser: 'F8 HPS',
+    buffer: 'Bicarbonate',
+    qd: '500',
+    qb: '350',
+    anticoagulant: 'Heparin',
+    prescribedDose: '4.0',
+    scriptValidityStart: '',
+    scriptExpiryDate: '',
+    scriptReminder: '1 Week',
+    attachments: [],
+    patientId: null
+};
 
 // Mock data for dropdowns (UNCHANGED)
 const accessTypes = ['AV Fistula', 'Graft', 'Catheter', 'Other'];
@@ -32,6 +63,53 @@ const dialysers = ['F8 HPS', 'FX80', 'Optiflux', 'Other'];
 const buffers = ['Bicarbonate', 'Acetate'];
 const anticoagulants = ['Heparin', 'Citrate', 'None'];
 const reminderPeriods = ['1 Week', '2 Weeks', '1 Month', '3 Months'];
+
+// ----------------------------------------------------------------
+// --- Patient Details Modal Component (Defined outside the main component) ---
+// ----------------------------------------------------------------
+const PatientDetailsModal = ({ isOpen, onClose, patientData }) => {
+    if (!isOpen || !patientData) return null;
+
+    const handlePrint = () => {
+        window.print();
+    };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <motion.div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+            >
+                <div className="modal-header">
+                    <h2 className="modal-title">
+                        <FaUsers style={{ marginRight: '10px' }} /> Master Record: {patientData.fullName || 'N/A'}
+                    </h2>
+
+                    {/* 🎯 PRINT BUTTON WITH FUNCTIONALITY */}
+                    <motion.button
+                        className="print-button green-button"
+                        onClick={handlePrint}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <FaPrint style={{ marginRight: '5px' }} /> Print Record
+                    </motion.button>
+
+                    <button className="close-button" onClick={onClose}>&times;</button>
+                </div>
+
+                <div className="modal-body">
+                    <PatientRecordView
+                        patientData={patientData}
+                    />
+                </div>
+            </motion.div>
+        </div>
+    );
+};
 
 
 const initialFormData = {
@@ -43,24 +121,23 @@ const initialFormData = {
     accessType: '', diabeticStatus: 'N', smokingStatus: 'N',
     // Dialysis Prescription
     dialysisModality: '', // FIX 1: Correct key to match BE
-    frequency: 1, 
+    frequency: 1,
     prescribedDose: '', // FIX 2: Correct key to match input name and BE expectation (maps to script_duration)
     dialyser: '', buffer: '', qd: '', qb: '', anticoagulant: '',
-    scriptValidityStart: '', 
+    scriptValidityStart: '',
     scriptExpiryDate: '', // FIX 3: Correct key to match input name (maps to script_validity_end)
     scriptReminder: '1 Month',
 };
 
-// --- Sub-Component: PatientSummaryTable (New Component) ---
-// This component displays all patients and allows selection.
-const PatientSummaryTable = ({ records, onSelectPatient }) => {
+// 🎯 FIX: onViewDetails is not defined inside PatientSummaryTable (Error Line 138)
+const PatientSummaryTable = ({ records, onViewDetails, onSelectPatient }) => { // <-- Prop is destructured here
     // 🎯 FIX 1: Create a safe array. If 'records' is null/undefined, use [] instead.
     const patientRecords = Array.isArray(records) ? records : [];
-    
+
     return (
         <div className="patient-summary-table-container">
             <h3 className="summary-title"><FaUsers /> Existing Patient Records</h3>
-            
+
             {/* 🎯 FIX 2: Use the safe array for length check */}
             {patientRecords.length === 0 ? (
                 <p className="no-records-message">No patient records found. Start by saving a new one!</p>
@@ -78,17 +155,22 @@ const PatientSummaryTable = ({ records, onSelectPatient }) => {
                         <tbody>
                             {/* 🎯 FIX 3: Map over the safe array */}
                             {patientRecords.map((record) => (
-                                <tr key={record.id}> 
-                                    <td data-label="ID">{record.id}</td> 
+                                <tr key={record.id}>
+                                    <td data-label="ID">{record.id}</td>
                                     <td data-label="Name">{record.full_name}</td>
                                     <td data-label="Contact">{record.contact_details}</td>
                                     <td data-label="Action">
-                                        <button
-                                            className="action-select-btn"
-                                            onClick={() => onSelectPatient(record.id, record.full_name)}
+                                        {/* 🎯 UPDATED: View Details Button with Icon, green-button class, and animation */}
+                                        <motion.button
+                                            className="green-button view-details-btn"
+                                            onClick={() => onViewDetails(record.id)}
+                                            whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(52, 152, 219, 0.8)" }}
+                                            whileTap={{ scale: 0.95 }}
                                         >
+                                            <FaEye style={{ marginRight: '8px' }} />
                                             View Details
-                                        </button>
+                                        </motion.button>
+
                                     </td>
                                 </tr>
                             ))}
@@ -101,9 +183,12 @@ const PatientSummaryTable = ({ records, onSelectPatient }) => {
 };
 
 const PatientDetailsPage = () => {
+     // 🎯 FIX: Added missing state variables to resolve ESLint errors
+    const [patientData, setPatientData] = useState(initialPatientState); 
+    const [isEditMode, setIsEditMode] = useState(false); 
     // 🎯 NEW: State for all patient records and the currently selected patient
     const [allPatients, setAllPatients] = useState([]);
-     // 🎯 FIX 1: Ensure selectedPatientId and its setter are defined
+    // 🎯 FIX 1: Ensure selectedPatientId and its setter are defined
     // eslint-disable-next-line no-unused-vars
     const [selectedPatientId, setSelectedPatientId] = useState(null);
     // eslint-disable-next-line no-unused-vars
@@ -113,9 +198,24 @@ const PatientDetailsPage = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [toast, setToast] = useState({ open: false, message: '', severity: '' });
     const [loading, setLoading] = useState(false);
+
+    // 🎯 Missing states for Modal
+    const [patientToView, setPatientToView] = useState(null); // FIX: 'patientToView' not defined
+    const [isModalOpen, setIsModalOpen] = useState(false);   // FIX: 'isModalOpen'/'setIsModalOpen' not defined
     
+    // 🎯 Missing ref
+    const formRef = useRef(null); // FIX: 'formRef' not defined
+
+    
+
+    // 🎯 FIX 5: Define handleShowToast using useCallback
+    const handleShowToast = useCallback((message, severity) => {
+        setToast({ open: true, message, severity });
+    }, [setToast]); // setToast is stable but kept for completeness, though linter may warn
+
    
-    
+
+
     const fetchAllPatients = useCallback(async () => {
         setTableLoading(true);
         try {
@@ -128,7 +228,7 @@ const PatientDetailsPage = () => {
             // Assume the data might be in response.data.rows (if coming from pg/node) or response.data.
             // If the structure is non-standard or missing, default to an empty array [].
             const fetchedRecords = response.data?.rows || response.data || [];
-            
+
             // 🎯 CRITICAL FIX 2: Ensure we only set the state if it's an array
             if (Array.isArray(fetchedRecords)) {
                 setAllPatients(fetchedRecords);
@@ -138,10 +238,10 @@ const PatientDetailsPage = () => {
             }
         } catch (error) {
             console.error('Error fetching patients:', error);
-            
+
             // 🎯 CRITICAL FIX 3: On any API error, set the state to an empty array.
-            setAllPatients([]); 
-            
+            setAllPatients([]);
+
             setToast({
                 open: true,
                 message: 'Failed to load patient records. Check server connection.',
@@ -150,25 +250,40 @@ const PatientDetailsPage = () => {
         } finally {
             setTableLoading(false);
         }
-    }, [setToast]); 
+    }, [setToast]);
 
     // UseEffect to fetch data on component mount
     useEffect(() => {
         fetchAllPatients();
     }, [fetchAllPatients]); // fetchAllPatients is guaranteed to be stable thanks to useCallback
 
+    // 🎯 FIX 6: Define handleViewDetails using useCallback
+    const handleViewDetails = useCallback(async (patientId) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`${PATIENT_API_URL}/${patientId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setPatientToView(response.data);
+            setIsModalOpen(true); // FIX: setIsModalOpen is defined
+        } catch (error) {
+            console.error('Error fetching patient details:', error);
+            handleShowToast('Failed to load patient record for viewing.', 'error');
+        }
+    }, [handleShowToast, setPatientToView, setIsModalOpen]); // FIX: handleViewDetails is now defined
 
-    // Handler to select a patient from the table
-    const handleSelectPatient = (id, fullName) => { // FIX 2: Handler now receives 'id'
-        setSelectedPatientId(id);
-        setSelectedPatientName(fullName);
-        // FIX 2: Toast now correctly displays the ID passed from the table
-        setToast({ open: true, message: `Patient ${fullName} (ID: ${id}) selected.`, severity: 'info' });
 
-        // OPTIONAL: If you want to load the *selected* patient's details into the form:
-        // const selectedRecord = allPatients.find(p => p.id === id); // Use 'id' from the aliased column
-        // if (selectedRecord) { setFormData(selectedRecord); }
-    };
+     // 🎯 FIX: Corrected function signature to use the 'patient' argument
+    const handleSelectPatient = useCallback((patient) => {
+        // Set form data to the selected patient's data for editing
+        setPatientData(patient); 
+        setIsEditMode(true); 
+        handleShowToast(`Now editing patient ID: ${patient.id}.`, 'info');
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [handleShowToast]);
+
 
 
     // State for file attachments and ref for hidden input
@@ -280,56 +395,53 @@ const PatientDetailsPage = () => {
 
 
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setToast({ open: false, message: '', severity: '' });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setToast({ open: false, message: '', severity: '' });
 
-    try {
-        const token = localStorage.getItem('token');
-        // Assuming API_BASE_URL points to your patient creation endpoint
-        const response = await axios.post(PATIENT_API_URL, formData, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        // 🎯 FIX 1: Read the ID correctly from the response object (response.data.patientId)
-        const newPatientId = response.data.patientId; 
-        const newPatientName = formData.fullName; // Grab the name from the form data itself
-
-        // 🎯 FIX 2: Only show success toast and run side-effects if the POST was successful (status 201 or 200)
-        if (response.status === 201 || response.status === 200) {
-            setToast({ 
-                open: true, 
-                message: `New Patient Record for ${newPatientName} (ID: ${newPatientId}) saved successfully!`, 
-                severity: 'success' 
+        try {
+            const token = localStorage.getItem('token');
+            // Assuming API_BASE_URL points to your patient creation endpoint
+            const response = await axios.post(PATIENT_API_URL, formData, {
+                headers: { Authorization: `Bearer ${token}` }
             });
 
-            // CRITICAL: Update the summary table and select the new patient
-            fetchAllPatients();
-            setSelectedPatientId(newPatientId);
-            setSelectedPatientName(`ID ${newPatientId}`); 
+            // 🎯 FIX 1: Read the ID correctly from the response object (response.data.patientId)
+            const newPatientId = response.data.patientId;
+            const newPatientName = formData.fullName; // Grab the name from the form data itself
 
-            setFormData(initialFormData);
-        } else {
-            // Handle unexpected successful status codes (e.g., 204 No Content)
-            setToast({
-                open: true,
-                message: 'Patient saved, but received an unusual server response status.',
-                severity: 'warning'
-            });
+            // 🎯 FIX 2: Only show success toast and run side-effects if the POST was successful (status 201 or 200)
+            if (response.status === 201 || response.status === 200) {
+                setToast({
+                    open: true,
+                    message: `New Patient Record for ${newPatientName} (ID: ${newPatientId}) saved successfully!`,
+                    severity: 'success'
+                });
+
+                // CRITICAL: Update the summary table and select the new patient
+                fetchAllPatients();
+                setSelectedPatientId(newPatientId);
+                setSelectedPatientName(`ID ${newPatientId}`);
+
+                setFormData(initialFormData);
+            } else {
+                // Handle unexpected successful status codes (e.g., 204 No Content)
+                setToast({
+                    open: true,
+                    message: 'Patient saved, but received an unusual server response status.',
+                    severity: 'warning'
+                });
+            }
+        } catch (error) {
+            // ... (existing error handling for failed save)
+            console.error('Error saving patient record:', error.response?.data || error.message);
+             // 🎯 FIX: Used correct toast handler name
+            handleShowToast('Failed to save patient record. Check your inputs.', 'error');
+        } finally {
+            setLoading(false);
         }
-    } catch (error) {
-        // ... (existing error handling for failed save)
-        console.error('Error saving patient record:', error.response?.data || error.message);
-        setToast({
-            open: true,
-            message: error.response?.data?.error || 'Failed to save patient record. Please check the console.',
-            severity: 'error'
-        });
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
 
 
@@ -349,7 +461,7 @@ const handleSubmit = async (e) => {
                     Reset Form
                 </motion.button>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} ref={formRef}>
                     <div className="form-grid-layout">
 
                         {/* ========================================= */}
@@ -365,7 +477,7 @@ const handleSubmit = async (e) => {
                                     id="fullName"
                                     name="fullName"
                                     placeholder="Patient's Full Name"
-                                    value={formData.fullName}
+                                    value={patientData.fullName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -379,7 +491,7 @@ const handleSubmit = async (e) => {
                                     id="address"
                                     name="address"
                                     placeholder="Residential Address"
-                                    value={formData.address}
+                                    value={patientData.address}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -393,7 +505,7 @@ const handleSubmit = async (e) => {
                                     id="contactDetails"
                                     name="contactDetails"
                                     placeholder="Phone/Email"
-                                    value={formData.contactDetails}
+                                    value={patientData.contactDetails}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -407,7 +519,7 @@ const handleSubmit = async (e) => {
                                     id="nextOfKin"
                                     name="nextOfKin"
                                     placeholder="Kin's Name/Contact"
-                                    value={formData.nextOfKin}
+                                    value={patientData.nextOfKin}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -421,7 +533,7 @@ const handleSubmit = async (e) => {
                                     id="age"
                                     name="age"
                                     placeholder="Years"
-                                    value={formData.age}
+                                    value={patientData.age}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -431,7 +543,7 @@ const handleSubmit = async (e) => {
                         <div className="grid-item-2">
                             <div className="input-group">
                                 <label htmlFor="gender">Gender</label>
-                                <select id="gender" name="gender" value={formData.gender} onChange={handleChange}>
+                                <select id="gender" name="gender" value={patientData.gender} onChange={handleChange}>
                                     <option value="" disabled>Select</option>
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
@@ -462,7 +574,7 @@ const handleSubmit = async (e) => {
                                     id="weight"
                                     name="weight"
                                     placeholder="e.g., 75"
-                                    value={formData.weight}
+                                    value={patientData.weight}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -473,7 +585,7 @@ const handleSubmit = async (e) => {
                             <div className="input-group">
                                 <label htmlFor="dateOfBirth">Date of Birth</label>
                                 <input type="date" id="dateOfBirth" name="dateOfBirth"
-                                    value={formData.dateOfBirth} onChange={handleChange} />
+                                    value={patientData.dateOfBirth} onChange={handleChange} />
                             </div>
                         </div>
 
@@ -488,7 +600,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="accessType"
                                     name="accessType"
-                                    value={formData.accessType}
+                                    value={patientData.accessType}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select access type</option>
@@ -505,7 +617,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="diabeticStatus"
                                     name="diabeticStatus"
-                                    value={formData.diabeticStatus}
+                                    value={patientData.diabeticStatus}
                                     onChange={handleChange}
                                 >
                                     <option value="Y">Yes</option>
@@ -520,7 +632,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="smokingStatus"
                                     name="smokingStatus"
-                                    value={formData.smokingStatus}
+                                    value={patientData.smokingStatus}
                                     onChange={handleChange}
                                 >
                                     <option value="Y">Yes</option>
@@ -540,7 +652,7 @@ const handleSubmit = async (e) => {
                             <div className="input-group">
                                 <label htmlFor="dialysisModality">Dialysis Modality</label>
                                 <select id="dialysisModality" name="dialysisModality"
-                                    value={formData.dialysisModality} 
+                                    value={patientData.dialysisModality}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select modality</option>
@@ -557,7 +669,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="frequency"
                                     name="frequency"
-                                    value={formData.frequency}
+                                    value={patientData.frequency}
                                     onChange={handleChange}
                                 >
                                     {frequencies.map(f => (
@@ -576,7 +688,7 @@ const handleSubmit = async (e) => {
                                     id="prescribedDose"
                                     name="prescribedDose"
                                     placeholder="e.g., 4"
-                                    value={formData.prescribedDose}
+                                    value={patientData.prescribedDose}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -589,7 +701,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="dialyser"
                                     name="dialyser"
-                                    value={formData.dialyser}
+                                    value={patientData.dialyser}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select dialyser</option>
@@ -606,7 +718,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="buffer"
                                     name="buffer"
-                                    value={formData.buffer}
+                                    value={patientData.buffer}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select buffer</option>
@@ -625,7 +737,7 @@ const handleSubmit = async (e) => {
                                     id="qd"
                                     name="qd"
                                     placeholder="e.g., 500"
-                                    value={formData.qd}
+                                    value={patientData.qd}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -639,7 +751,7 @@ const handleSubmit = async (e) => {
                                     id="qb"
                                     name="qb"
                                     placeholder="e.g., 300"
-                                    value={formData.qb}
+                                    value={patientData.qb}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -651,7 +763,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="anticoagulant"
                                     name="anticoagulant"
-                                    value={formData.anticoagulant}
+                                    value={patientData.anticoagulant}
                                     onChange={handleChange}
                                 >
                                     <option value="" disabled>Select anticoagulant</option>
@@ -674,7 +786,7 @@ const handleSubmit = async (e) => {
                                     type="date"
                                     id="scriptValidityStart"
                                     name="scriptValidityStart"
-                                    value={formData.scriptValidityStart}
+                                    value={patientData.scriptValidityStart}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -685,7 +797,7 @@ const handleSubmit = async (e) => {
                             <div className="input-group">
                                 <label htmlFor="scriptExpiryDate">Validity End Date</label>
                                 <input type="date" id="scriptExpiryDate" name="scriptExpiryDate"
-                                    value={formData.scriptExpiryDate} onChange={handleChange} />
+                                    value={patientData.scriptExpiryDate} onChange={handleChange} />
                             </div>
                         </div>
 
@@ -695,7 +807,7 @@ const handleSubmit = async (e) => {
                                 <select
                                     id="scriptReminder"
                                     name="scriptReminder"
-                                    value={formData.scriptReminder}
+                                    value={patientData.scriptReminder}
                                     onChange={handleChange}
                                 >
                                     {reminderPeriods.map(p => (
@@ -709,7 +821,7 @@ const handleSubmit = async (e) => {
                             {/* Alert text using a custom-styled div */}
                             <div className="custom-alert reminder-alert-style">
                                 <span className="alert-icon"><FaClock /></span>
-                                <p>Alert set: **{formData.scriptReminder}** before expiry.</p>
+                                <p>Alert set: **{patientData.scriptReminder}** before expiry.</p>
                             </div>
                         </div>
 
@@ -803,7 +915,8 @@ const handleSubmit = async (e) => {
                                 whileTap={{ scale: 0.98 }}
                                 disabled={loading} // Disable while saving
                             >
-                                {loading ? <><FaSpinner className="spinner" /> SAVING...</> : 'SAVE PATIENT RECORD'}
+                                {/* 🎯 FIX: isEditMode is now used to change the button text */}
+                                {loading ? <><FaSpinner className="spinner" /> SAVING...</> : (isEditMode ? 'UPDATE PATIENT RECORD' : 'SAVE NEW PATIENT RECORD')}
                             </motion.button>
                         </div>
                     </div>
@@ -813,8 +926,8 @@ const handleSubmit = async (e) => {
             {/* --- 2. PATIENT SUMMARY TABLE --- */}
             <PatientSummaryTable
                 records={allPatients}
-                onSelectPatient={handleSelectPatient}
-                 // REMOVED: setTableLoading is used inside fetchAllPatients, no need to pass it here.
+                onSelectPatient={handleSelectPatient} // For editing
+                onViewDetails={handleViewDetails} // For viewing/printing (NEW)
             />
 
 
@@ -827,7 +940,12 @@ const handleSubmit = async (e) => {
                 onClose={handleToastClose}
             />
 
-
+             {/* --- 3. PATIENT DETAILS MODAL (View/Print) --- */}
+            <PatientDetailsModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                patientData={patientToView}
+            />
         </div>
     );
 };

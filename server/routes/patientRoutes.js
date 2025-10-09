@@ -106,6 +106,78 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
+// --------------------------------------------------------
+// GET /api/patients/:id (Fetch a single patient master record)
+// --------------------------------------------------------
+router.get('/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id; // Security check: Ensure the user owns the record
+
+    try {
+       const query = `
+            SELECT 
+                patient_id AS id, 
+                full_name, 
+                contact_details, 
+
+                -- 🎯 Missing Fields Added Below (General Details)
+                address, 
+                next_of_kin AS "nextOfKin",
+                height, 
+                weight,
+                EXTRACT(YEAR FROM age(NOW(), date_of_birth)) AS age, -- Calculated Age
+                
+                -- Medical Status
+                access_type AS "accessType",
+                diabetic_status, 
+                smoking_status,
+                
+                -- Dialysis Prescription
+                dialysis_modality AS "dialysisModality", 
+                frequency, 
+                dialyser, 
+                buffer, 
+                qd,
+                qb,
+                anticoagulant,
+                script_duration AS "prescribedDose", -- Maps to Duration (Hours)
+                
+                -- Script Validity
+                TO_CHAR(date_of_birth, 'YYYY-MM-DD') AS "dateOfBirth",
+                TO_CHAR(script_validity_start, 'YYYY-MM-DD') AS "scriptValidityStart",
+                TO_CHAR(script_validity_end, 'YYYY-MM-DD') AS "scriptExpiryDate",
+                script_reminder AS "scriptReminder"
+            
+            FROM patient_master_records
+            WHERE patient_id = $1 AND user_id = $2;
+        `;
+       
+
+        const result = await db.query(query, [id, userId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Patient record not found or unauthorized.' });
+        }
+
+        // Convert boolean flags to 'Y'/'N' for frontend form consistency
+        const patientData = result.rows[0];
+            // 🎯 FIX 1: Read the correct snake_case property from the DB result for conversion
+        patientData.diabeticStatus = patientData.diabetic_status ? 'Y' : 'N';
+        patientData.smokingStatus = patientData.smoking_status ? 'Y' : 'N';
+
+        // 🎯 CRITICAL CLEANUP: Delete the original snake_case keys after conversion
+        delete patientData.diabetic_status;
+        delete patientData.smoking_status;
+
+
+        res.status(200).json(patientData);
+    } catch (err) {
+        console.error('Database GET /api/patients/:id Error:', err);
+        res.status(500).json({ error: 'Failed to fetch single patient record.', details: err.message });
+    }
+});
+
+
 
 // --------------------------------------------------------
 // PATIENT PATHOLOGY ROUTES (No change needed unless filtering is required)

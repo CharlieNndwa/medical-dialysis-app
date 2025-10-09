@@ -1,0 +1,118 @@
+/* FILE: PatientRecordView.css */
+
+/* --- GENERAL VIEW STYLING --- */
+
+.patient-record-view-content {
+    padding: 10px 0;
+    /* Use the grid styling from PatientDetails.css for layout */
+}
+
+/* Style for each label and value pair */
+.data-field {
+    margin-bottom: 10px;
+}
+
+.data-field label {
+    font-weight: 600;
+    color: #555;
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+/* Visual cue for the read-only data */
+.data-value {
+    background-color: #f7f9fc;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #333;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    min-height: 38px;
+    box-sizing: border-box;
+}
+
+/* Ensure the grid layout is maintained in the modal */
+.view-mode-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+}
+
+
+/* --- PRINT STYLING (@media print) --- */
+
+@media print {
+    /* 1. Hide the entire application body content by default */
+    body > *:not(.modal-overlay) {
+        display: none !important;
+    }
+    
+    /* 2. Show the modal overlay and stretch it to be the print area */
+    .modal-overlay {
+        position: static; 
+        display: block !important;
+        background: none !important;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* 3. Ensure modal content is clean for printing */
+    .modal-content {
+        width: 100%;
+        max-width: none;
+        max-height: none;
+        overflow: visible;
+        box-shadow: none;
+        padding: 20px; 
+    }
+
+    /* 4. Hide all UI elements not needed for the record */
+    .close-button,
+    .print-button,
+    .modal-footer,
+    .read-only-notice-container,
+    .attached-file-block button {
+        display: none !important;
+    }
+    
+    /* 5. Improve data presentation for black and white printing */
+    .data-field {
+        page-break-inside: avoid;
+        margin-bottom: 8px;
+    }
+    
+    .data-value {
+        background-color: transparent !important;
+        border: 1px solid #ccc !important; 
+        color: #000 !important;
+    }
+    
+    .section-header {
+        color: #000 !important;
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        border-bottom: 2px solid #333 !important;
+        margin-top: 15px;
+        /* Ensure text is readable */
+        font-size: 1.2rem;
+    }
+
+    /* 6. Optimize grid for print (using flex to simplify layout) */
+    .view-mode-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    /* Let the fields take a readable amount of space (e.g., three or four per row) */
+    .view-mode-grid > div {
+        flex: 1 1 30%; 
+        box-sizing: border-box;
+    }
+    .view-mode-grid .grid-item-12 {
+        flex: 1 1 100%;
+    }
+}
