@@ -740,3 +740,44 @@
         width: 100%;
         justify-content: center;
     }
+
+    /* --- Pagination Controls for Patient Details Table --- */
+.pd-pagination-controls {
+    display: flex;
+    justify-content: flex-end; /* Align controls to the right */
+    align-items: center;
+    padding: 15px 0 0 0; 
+    gap: 15px;
+    margin-top: 10px; 
+}
+
+.pd-page-button {
+    background-color: #3498db; 
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.pd-page-button:hover:not(:disabled) {
+    background-color: #2980b9;
+}
+
+.pd-page-button:disabled {
+    background-color: #bdc3c7; /* Light grey when disabled */
+    cursor: not-allowed;
+}
+
+.pd-page-info {
+    font-weight: 500;
+    color: #34495e;
+}
+
+/* --- Mobile Responsiveness (Ensures Table Scrolls) --- */
+.summary-table-wrapper {
+    overflow-x: auto; /* Allows horizontal scrolling for wide tables on small screens */
+    width: 100%;
+}

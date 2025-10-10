@@ -129,8 +129,13 @@ const initialFormData = {
     scriptReminder: '1 Month',
 };
 
+// 🎯 NEW CONSTANT FOR PAGINATION
+const RECORDS_PER_PAGE = 5;
+
 // 🎯 FIX: onViewDetails is not defined inside PatientSummaryTable (Error Line 138)
-const PatientSummaryTable = ({ records, onViewDetails, onSelectPatient }) => { // <-- Prop is destructured here
+const PatientSummaryTable = ({ records, onViewDetails, onSelectPatient, currentPage,       // New Prop
+    totalPages,        // New Prop
+    onPageChange }) => { // <-- Prop is destructured here
     // 🎯 FIX 1: Create a safe array. If 'records' is null/undefined, use [] instead.
     const patientRecords = Array.isArray(records) ? records : [];
 
@@ -178,6 +183,29 @@ const PatientSummaryTable = ({ records, onViewDetails, onSelectPatient }) => { /
                     </table>
                 </div>
             )}
+
+            {/* 🎯 PAGINATION CONTROLS ADDED HERE */}
+            {totalPages > 1 && (
+                <div className="pd-pagination-controls">
+                    <button
+                        onClick={() => onPageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="pd-page-button"
+                    >
+                        Previous
+                    </button>
+                    <span className="pd-page-info">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <motion.button
+                        onClick={() => onPageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="pd-page-button"
+                    >
+                        Next
+                    </motion.button>
+                </div>
+            )}
         </div>
     );
 };
@@ -198,6 +226,34 @@ const PatientDetailsPage = () => {
     const [formData, setFormData] = useState(initialFormData);
     const [toast, setToast] = useState({ open: false, message: '', severity: '' });
     const [loading, setLoading] = useState(false);
+
+    // 🚨 NEW STATE FOR PAGINATION
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // ----------------------------------------------------
+    // Pagination Logic
+    // ----------------------------------------------------
+    const totalPages = Math.ceil(allPatients.length / RECORDS_PER_PAGE);
+    const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
+    // 🎯 Sliced records passed to the table
+    const currentPatients = allPatients.slice(startIndex, startIndex + RECORDS_PER_PAGE);
+
+    const handlePageChange = useCallback((page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    }, [totalPages]);
+
+    // Reset page logic (important for filtering/fetching new data sets)
+    useEffect(() => {
+    if (currentPage > totalPages && allPatients.length > 0) {
+         setCurrentPage(totalPages);
+    } else if (allPatients.length === 0) {
+         setCurrentPage(1);
+    }
+    // 🎯 FIX 1: Added 'currentPage' to the dependency array.
+}, [allPatients, totalPages, currentPage]); 
+
 
     // 🎯 Missing states for Modal
     const [patientToView, setPatientToView] = useState(null); // FIX: 'patientToView' not defined
@@ -925,11 +981,14 @@ const PatientDetailsPage = () => {
 
             {/* --- 2. PATIENT SUMMARY TABLE --- */}
             <PatientSummaryTable
-                records={allPatients}
-                onSelectPatient={handleSelectPatient} // For editing
-                onViewDetails={handleViewDetails} // For viewing/printing (NEW)
+                records={currentPatients} // 🎯 Pass the sliced records (max 5)
+                onSelectPatient={handleSelectPatient}
+                onViewDetails={handleViewDetails}
+                // 🎯 New Pagination Props
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
             />
-
 
 
             {/* Custom Toast Notification Integration - Only triggered by Save, Reset, and Upload (if implemented there) */}
