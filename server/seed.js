@@ -94,7 +94,7 @@ const createHemodialysisRecordsTable = async (client) => {
             dialyzer_type VARCHAR(100),
             blood_flow_rate INTEGER,
             dialysate_flow_rate INTEGER,
-            -- staff_initials VARCHAR(10), <--- REMOVED THIS LINE
+            disconnected_by VARCHAR(100),
             notes TEXT,
             signature_data TEXT,
             diagnosis VARCHAR(255),

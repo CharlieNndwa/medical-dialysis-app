@@ -16,6 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import './Header.css';
 import dialysisIcon from '../assets/dialysis-icon.png';
+import { MdOutlineExitToApp } from 'react-icons/md';
 
 // 🚨 NEW CONSTANT: Define the API root (based on your saved config)
 const API_SERVER_ROOT = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -30,10 +31,10 @@ const DESKTOP_HEADER_HEIGHT = '64px';
 const Header = ({ onSidebarToggle, isSidebarCollapsed }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [foundPatient, setFoundPatient] = useState(null); // <--- 🚨 NEW STATE: To track the found patient
-    // 🚨 CRITICAL: Get the user object (which should hold the token or we get it from local storage)
+  // 🚨 CRITICAL: Get the user object (which should hold the token or we get it from local storage)
   const { user, logout } = useAuth(); // Assume user object contains token/ID
-  
-const token = localStorage.getItem('token'); 
+
+  const token = localStorage.getItem('token');
 
   const navigate = useNavigate();
 
@@ -43,42 +44,42 @@ const token = localStorage.getItem('token');
   };
 
   // 🚨 CRITICAL FIX: The handleSearch function must include the 'headers' object
-    const handleSearch = async (e) => {
-        // Only run search on Enter key press
-        if (e.key !== 'Enter' || !searchTerm.trim()) {
-            return;
+  const handleSearch = async (e) => {
+    // Only run search on Enter key press
+    if (e.key !== 'Enter' || !searchTerm.trim()) {
+      return;
+    }
+    e.preventDefault();
+
+    const query = searchTerm.trim();
+
+    try {
+      const response = await axios.get(`${API_SERVER_ROOT}/api/patients/search`, {
+        params: { q: query },
+        // 👇 THIS IS THE CRITICAL FIX for the 401 error 👇
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-        e.preventDefault();
+      });
 
-        const query = searchTerm.trim();
+      // Success logic (from your previous code)
+      const patients = response.data;
+      if (patients && patients.length > 0) {
+        const p = patients[0];
+        setFoundPatient(p);
+        setSearchTerm(`Found: ${p.fullName} (ID: ${p.id})`);
+      } else {
+        setFoundPatient(null);
+        setSearchTerm(`No patient found for: ${query}`);
+      }
 
-        try {
-            const response = await axios.get(`${API_SERVER_ROOT}/api/patients/search`, {
-                params: { q: query },
-                // 👇 THIS IS THE CRITICAL FIX for the 401 error 👇
-                headers: {
-                    'Authorization': `Bearer ${token}` 
-                }
-            });
-            
-            // Success logic (from your previous code)
-            const patients = response.data;
-            if (patients && patients.length > 0) {
-                const p = patients[0];
-                setFoundPatient(p);
-                setSearchTerm(`Found: ${p.fullName} (ID: ${p.id})`);
-            } else {
-                setFoundPatient(null);
-                setSearchTerm(`No patient found for: ${query}`);
-            }
-
-        } catch (error) {
-            console.error("Patient search failed:", error.response ? error.response.data : error.message);
-            // Revert to search term on error
-            setSearchTerm(`Search Failed. Try again.`); 
-            setFoundPatient(null);
-        }
-    };
+    } catch (error) {
+      console.error("Patient search failed:", error.response ? error.response.data : error.message);
+      // Revert to search term on error
+      setSearchTerm(`Search Failed. Try again.`);
+      setFoundPatient(null);
+    }
+  };
 
   // 🚨 NEW CHANGE HANDLER: Resets state to allow for typing after a search
   const handleSearchChange = (e) => {
@@ -145,8 +146,8 @@ const token = localStorage.getItem('token');
               placeholder="Search Patient Name or ID..."
               inputProps={{ 'aria-label': 'search' }}
               value={searchTerm}
-              onChange={handleSearchChange}  
-              onKeyDown={handleSearch}      
+              onChange={handleSearchChange}
+              onKeyDown={handleSearch}
               sx={{
                 color: 'white',
                 width: '100%',
@@ -189,6 +190,7 @@ const token = localStorage.getItem('token');
               padding: { xs: '4px 8px', sm: '6px 16px' }
             }}
           >
+            <MdOutlineExitToApp style={{ marginRight: '5px' }} />
             Logout
           </Button>
         </Box>

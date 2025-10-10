@@ -162,8 +162,7 @@ const HemodialysisSummaryTable = ({ records }) => {
                 <td data-label="Time Off">{record.time_off || 'N/A'}</td>
                 <td data-label="Pre-Weight (kg)">{record.pre_weight}</td>
                 <td data-label="Post-Weight (kg)">{record.post_weight}</td>
-                {/* 🎯 FIX 6: Use staff_initials for 'Disconnected By' */}
-                <td data-label="Disconnected By">{record.staff_initials || 'N/A'}</td> 
+               <td data-label="Disconnected By">{record.disconnected_by || 'N/A'}</td> 
               </tr>
             );
           })}
@@ -404,7 +403,9 @@ const handleSubmit = async (e) => {
       dialyzerType: formData.dialyzer,
       bloodFlowRate: formData.bloodPumpSpeedQb,
       dialysateFlowRate: formData.dialysateSpeedQd,
-      // staffInitials: formData.disconnectedBy, <--- REMOVED THIS LINE
+      
+      // 🎯 CRITICAL FIX: Add the disconnected_by field to the payload
+      disconnected_by: formData.disconnectedBy,
       
       // NEW FIELDS MAPPING 
       diagnosis: formData.diagnosis,
