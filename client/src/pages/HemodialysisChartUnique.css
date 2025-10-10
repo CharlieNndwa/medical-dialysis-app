@@ -317,69 +317,7 @@
     font-size: 1.2rem;
 }
 
-/* --- 10. Mobile Responsiveness (Less detailed original block) --- */
-@media (max-width: 768px) {
-    .hd-chart-main-wrapper {
-        width: 98%;
-        margin: 15px auto;
-    }
 
-    .hd-form-paper-card {
-        padding: 15px;
-    }
-
-    .hd-page-heading {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-    }
-
-    .hd-section-title {
-        font-size: 1.4rem;
-        margin-bottom: 15px;
-    }
-
-    .hd-grid-layout-3, .hd-grid-layout-4 {
-        grid-template-columns: 1fr;
-    }
-    
-    .hd-action-reset-btn {
-        position: static;
-        margin-bottom: 15px;
-        width: 100%;
-        justify-content: center;
-    }
-
-    .hd-submit-action-btn {
-        width: 100%;
-    }
-
-    /* Summary table responsiveness for mobile */
-    .hd-summary-card {
-        padding: 20px;
-        margin-top: 25px;
-    }
-
-    .hd-summary-table th, .hd-summary-table td {
-        display: block;
-        width: 100%;
-        text-align: right;
-    }
-
-    .hd-summary-table th {
-        text-align: left;
-        border-bottom: none;
-        background-color: #f0f0f0;
-        margin-top: 5px;
-        border-radius: 4px 4px 0 0;
-    }
-
-    .hd-summary-table tr {
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        display: block;
-    }
-}
 
 /* --- 6. Signature Area Styling --- */
 .signature-section-container {
@@ -534,36 +472,7 @@
     width: 100%;
 }
 
-/* --- B. Desktop/Tablet Overrides (Min-width media query) --- */
-@media (min-width: 769px) {
-    /* Reset the form grid to its intended multi-column layout on larger screens */
-    .hd-form-grid {
-        display: grid; 
-        grid-template-columns: repeat(12, 1fr); /* Assuming a 12-column grid layout */
-        gap: 20px 30px; 
-        flex-direction: initial; /* Reset back to grid logic */
-    }
 
-    /* Reset button stacking to horizontal */
-    .hd-action-buttons {
-        flex-direction: row; 
-        justify-content: flex-end;
-    }
-    .hd-action-buttons button,
-    .hd-action-buttons .submit-btn-styled {
-        width: auto; 
-    }
-    
-    /* Reset other previously applied mobile-only styles if they conflict */
-    .hd-chart-main-wrapper {
-        width: 95%;
-        margin: 30px auto;
-        padding: 0;
-    }
-    .hd-page-heading {
-        font-size: 2.2rem; 
-    }
-}
 
 /* CRITICAL: Fix for the time intervals/dynamic fields breaking layout */
 /* These often use flex/grid internally, so force them to wrap/take full width on mobile */
@@ -578,4 +487,152 @@
 .hd-time-interval-row > *,
 .hd-dialysis-parameters-grid > * {
     width: 100% !important;
+}
+
+/* FILE: HemodialysisChartUnique.css (ROBUST MOBILE RESPONSIVENESS) */
+
+/* ======================================================= */
+/* --- Mobile/Tablet Responsiveness (< 769px) --- */
+/* ======================================================= */
+@media (max-width: 768px) {
+    
+    /* 1. MAIN WRAPPER & PAGE TITLE */
+    .hd-chart-main-wrapper {
+        margin: 10px auto;
+        /* Ensure content doesn't break out of the viewport width */
+        width: 98%; 
+        padding: 0 5px 60px 5px; 
+        box-sizing: border-box; 
+    }
+    
+    .hd-page-heading {
+        font-size: 1.6rem; 
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+        /* Allow title/icons to wrap if they are excessively long */
+        flex-wrap: wrap; 
+        text-align: center;
+    }
+
+    /* 2. FORM CARD & GRID (CRITICAL STACKING) */
+    .hd-form-paper-card {
+        padding: 15px 10px; /* Reduced internal padding */
+    }
+
+    .hd-form-grid {
+        display: flex; 
+        flex-direction: column; /* FIX: Force all columns to stack vertically */
+        gap: 15px;
+        padding: 0;
+    }
+
+    /* Force all grid children to take full width */
+    .hd-form-grid > * {
+        grid-column: span 12 !important; 
+        width: 100%;
+        margin-bottom: 0; /* Control spacing via flex gap */
+    }
+    
+    /* Input/Select styling for mobile legibility and compact size */
+    .hd-form-paper-card input,
+    .hd-form-paper-card select,
+    .hd-form-paper-card textarea {
+        font-size: 0.95rem; 
+        padding: 8px 10px; 
+    }
+    
+    /* Fieldset/Section Titles (made slightly smaller) */
+    .hd-form-paper-card legend {
+        font-size: 1.1rem;
+        padding: 0 10px;
+    }
+
+    /* 3. DYNAMIC TIME INTERVALS (COMPACT HORIZONTAL SCROLL) */
+    /* This section is complex, we need to ensure the headers and rows are compact */
+    .hd-dynamic-fields-container {
+        overflow-x: auto; /* Scrollable container for time intervals */
+        padding-bottom: 10px; 
+    }
+    
+    .hd-dynamic-row {
+        /* Prevent wrapping and allow horizontal scroll */
+        white-space: nowrap; 
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Compact gap */
+    }
+
+    .hd-time-header {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+        margin-right: 2px;
+    }
+    
+    .hd-dynamic-row input,
+    .hd-dynamic-row select {
+        width: 60px; /* Fixed small width for number inputs */
+        min-width: 60px;
+        text-align: center;
+        font-size: 0.85rem;
+        padding: 5px;
+    }
+
+    /* 4. SIGNATURE PAD */
+    .hd-signature-container {
+        grid-column: span 12 !important;
+        margin-top: 15px;
+    }
+    .hd-signature-canvas {
+        /* Scale the canvas down if necessary, or let it take available width */
+        width: 100% !important; 
+        height: 150px !important; /* Smaller height for mobile */
+    }
+
+    /* 5. ACTION BUTTONS (STACKING) */
+    .hd-action-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 10px; 
+        margin-top: 20px;
+        width: 100%;
+    }
+    .hd-action-buttons button,
+    .hd-action-buttons .submit-btn-styled {
+        width: 100%; /* Full width for easy tapping */
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+
+    /* 6. SUMMARY TABLE (CRITICAL HORIZONTAL SCROLL) */
+    .hd-summary-section {
+        margin-top: 30px;
+    }
+    .hd-summary-table-container {
+        overflow-x: auto; /* CRITICAL: Allows the table to scroll horizontally */
+        width: 100%;
+    }
+    
+    /* Make table content more compact */
+    .hd-summary-table th,
+    .hd-summary-table td {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        white-space: nowrap; /* Prevent text wrapping in cells */
+    }
+}
+
+
+/* ======================================================= */
+/* --- Side Bar and App Content Shift Fix (Mobile) --- */
+/* This is a general app fix, likely in another file (Header/Sidebar), 
+   but added here for completeness against your issue description. */
+/* If your side bar opens as a temporary drawer on small screens, 
+   you only need the width fixes above. If it is a fixed, full-width 
+   sidebar that overlaps content, you may need adjustments in JS/MUI.
+   Assuming a fixed content shift for general responsiveness:
+*/
+@media (min-width: 601px) and (max-width: 900px) {
+    /* Tablet/smaller desktop adjustments */
+    .hd-chart-main-wrapper {
+        width: 90%; 
+    }
 }

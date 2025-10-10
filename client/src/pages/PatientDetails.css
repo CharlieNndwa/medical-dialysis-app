@@ -741,13 +741,17 @@
         justify-content: center;
     }
 
-    /* --- Pagination Controls for Patient Details Table --- */
+  /* FILE: PatientDetails.css (PAGINATION MODIFICATIONS) */
+
+/* --- Pagination Controls for Patient Details Table --- */
 .pd-pagination-controls {
     display: flex;
-    justify-content: flex-end; /* Align controls to the right */
+    /* 🎯 FIX: Center alignment */
+    justify-content: center; 
     align-items: center;
     padding: 15px 0 0 0; 
-    gap: 15px;
+    /* 🎯 FIX: Reduced gap for smaller size */
+    gap: 10px; 
     margin-top: 10px; 
 }
 
@@ -755,9 +759,12 @@
     background-color: #3498db; 
     color: white;
     border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    /* 🎯 FIX: Smaller padding/size */
+    padding: 6px 12px; 
+    border-radius: 4px;
     cursor: pointer;
+    /* 🎯 FIX: Smaller font size */
+    font-size: 0.9rem; 
     font-weight: 600;
     transition: background-color 0.2s;
 }
@@ -774,10 +781,6 @@
 .pd-page-info {
     font-weight: 500;
     color: #34495e;
-}
-
-/* --- Mobile Responsiveness (Ensures Table Scrolls) --- */
-.summary-table-wrapper {
-    overflow-x: auto; /* Allows horizontal scrolling for wide tables on small screens */
-    width: 100%;
+    /* 🎯 FIX: Slightly smaller text */
+    font-size: 0.95rem; 
 }
