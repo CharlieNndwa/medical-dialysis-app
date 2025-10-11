@@ -65,12 +65,13 @@ const anticoagulants = ['Heparin', 'Citrate', 'None'];
 const reminderPeriods = ['1 Week', '2 Weeks', '1 Month', '3 Months'];
 
 // ----------------------------------------------------------------
-// --- Patient Details Modal Component (Defined outside the main component) ---
+// --- Patient Details Modal Component ---
 // ----------------------------------------------------------------
 const PatientDetailsModal = ({ isOpen, onClose, patientData }) => {
     if (!isOpen || !patientData) return null;
 
     const handlePrint = () => {
+        // This triggers the browser's print dialog, which will print the modal content
         window.print();
     };
 
@@ -85,10 +86,12 @@ const PatientDetailsModal = ({ isOpen, onClose, patientData }) => {
             >
                 <div className="modal-header">
                     <h2 className="modal-title">
-                        <FaUsers style={{ marginRight: '10px' }} /> Master Record: {patientData.fullName || 'N/A'}
+                        <FaUsers style={{ marginRight: '10px' }} />
+                        {/* 🎯 FIX 1: Display Patient ID and Full Name in the Modal header */}
+                        Master Record: {patientData.fullName || 'N/A'} {patientData.id && `(ID: ${patientData.id})`}
                     </h2>
 
-                    {/* 🎯 PRINT BUTTON WITH FUNCTIONALITY */}
+                    {/* PRINT BUTTON WITH FUNCTIONALITY */}
                     <motion.button
                         className="print-button green-button"
                         onClick={handlePrint}
@@ -168,6 +171,7 @@ const PatientSummaryTable = ({ records, onViewDetails, onSelectPatient, currentP
                                         {/* 🎯 UPDATED: View Details Button with Icon, green-button class, and animation */}
                                         <motion.button
                                             className="green-button view-details-btn"
+                                            // 🎯 CRITICAL FIX: The button MUST call onViewDetails to trigger the full data fetch/form population
                                             onClick={() => onViewDetails(record.id)}
                                             whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(52, 152, 219, 0.8)" }}
                                             whileTap={{ scale: 0.95 }}
@@ -246,13 +250,13 @@ const PatientDetailsPage = () => {
 
     // Reset page logic (important for filtering/fetching new data sets)
     useEffect(() => {
-    if (currentPage > totalPages && allPatients.length > 0) {
-         setCurrentPage(totalPages);
-    } else if (allPatients.length === 0) {
-         setCurrentPage(1);
-    }
-    // 🎯 FIX 1: Added 'currentPage' to the dependency array.
-}, [allPatients, totalPages, currentPage]); 
+        if (currentPage > totalPages && allPatients.length > 0) {
+            setCurrentPage(totalPages);
+        } else if (allPatients.length === 0) {
+            setCurrentPage(1);
+        }
+        // 🎯 FIX 1: Added 'currentPage' to the dependency array.
+    }, [allPatients, totalPages, currentPage]);
 
 
     // 🎯 Missing states for Modal
@@ -313,32 +317,46 @@ const PatientDetailsPage = () => {
         fetchAllPatients();
     }, [fetchAllPatients]); // fetchAllPatients is guaranteed to be stable thanks to useCallback
 
-    // 🎯 FIX 6: Define handleViewDetails using useCallback
+    // 🎯 CRITICAL FIX: The function must load the data into the main form as well.
     const handleViewDetails = useCallback(async (patientId) => {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(`${PATIENT_API_URL}/${patientId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setPatientToView(response.data);
-            setIsModalOpen(true); // FIX: setIsModalOpen is defined
+
+            const fetchedPatientData = response.data;
+
+            // 🎯 FIX 2: Load the fetched patient data into the form state for editing/viewing
+            setFormData(fetchedPatientData);
+
+
+            // Load data for the modal (View/Print functionality)
+            setPatientToView(fetchedPatientData);
+            setIsModalOpen(true);
+
+            // Scroll to the top of the form after populating it
+            if (formRef.current) {
+                formRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            handleShowToast(`Now viewing patient ID: ${patientId}.`, 'info');
         } catch (error) {
             console.error('Error fetching patient details:', error);
             handleShowToast('Failed to load patient record for viewing.', 'error');
         }
-    }, [handleShowToast, setPatientToView, setIsModalOpen]); // FIX: handleViewDetails is now defined
+    }, [handleShowToast, setPatientToView, setIsModalOpen, setFormData]);
 
-
-    const handleSelectPatient = useCallback((patient) => {
-        // CRITICAL FIX: Set the fetched patient data into formData 
-        // so the inputs (which will now read from formData) display it.
-        setFormData(patient);
-        setIsEditMode(true);
-        handleShowToast(`Now editing patient ID: ${patient.id}.`, 'info');
-        if (formRef.current) {
-            formRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [handleShowToast]);
+    // const handleSelectPatient = useCallback((patient) => {
+    //     // CRITICAL FIX: Set the fetched patient data into formData 
+    //     // so the inputs (which will now read from formData) display it.
+    //     setFormData(patient);
+    //     setIsEditMode(true);
+    //     handleShowToast(`Now editing patient ID: ${patient.id}.`, 'info');
+    //     if (formRef.current) {
+    //         formRef.current.scrollIntoView({ behavior: 'smooth' });
+    //     }
+    // }, [handleShowToast]);
 
 
 
@@ -446,6 +464,7 @@ const PatientDetailsPage = () => {
         setAttachedFiles([]); // Clear attached files
         setSelectedPatientId(null);
         setSelectedPatientName('Select a Patient');
+        setIsEditMode(false); // Important: exit edit mode
         setToast({ open: true, message: 'Form reset successful.', severity: 'info' });
     };
 
@@ -458,31 +477,41 @@ const PatientDetailsPage = () => {
 
         try {
             const token = localStorage.getItem('token');
-            // Assuming API_BASE_URL points to your patient creation endpoint
-            const response = await axios.post(PATIENT_API_URL, formData, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            let response;
+            let url = PATIENT_API_URL;
 
-            // 🎯 FIX 1: Read the ID correctly from the response object (response.data.patientId)
-            const newPatientId = response.data.patientId;
-            const newPatientName = formData.fullName; // Grab the name from the form data itself
+            if (isEditMode && formData.id) {
+                // UPDATE Existing Record
+                url = `${PATIENT_API_URL}/${formData.id}`;
+                response = await axios.put(url, formData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            } else {
+                // CREATE New Record
+                response = await axios.post(url, formData, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+            }
 
-            // 🎯 FIX 2: Only show success toast and run side-effects if the POST was successful (status 201 or 200)
+            const newPatientId = isEditMode ? formData.id : response.data.patientId;
+            const newPatientName = formData.fullName;
+            const action = isEditMode ? 'updated' : 'created';
+
             if (response.status === 201 || response.status === 200) {
                 setToast({
                     open: true,
-                    message: `New Patient Record for ${newPatientName} (ID: ${newPatientId}) saved successfully!`,
+                    message: `Patient Record for ${newPatientName} (ID: ${newPatientId}) ${action} successfully!`,
                     severity: 'success'
                 });
 
-                // CRITICAL: Update the summary table and select the new patient
                 fetchAllPatients();
                 setSelectedPatientId(newPatientId);
                 setSelectedPatientName(`ID ${newPatientId}`);
 
+                // Reset to initial state for a new record after successful save/update
                 setFormData(initialFormData);
+                setIsEditMode(false);
             } else {
-                // Handle unexpected successful status codes (e.g., 204 No Content)
                 setToast({
                     open: true,
                     message: 'Patient saved, but received an unusual server response status.',
@@ -490,9 +519,7 @@ const PatientDetailsPage = () => {
                 });
             }
         } catch (error) {
-            // ... (existing error handling for failed save)
             console.error('Error saving patient record:', error.response?.data || error.message);
-            // 🎯 FIX: Used correct toast handler name
             handleShowToast('Failed to save patient record. Check your inputs.', 'error');
         } finally {
             setLoading(false);
@@ -516,6 +543,14 @@ const PatientDetailsPage = () => {
                     <FaRedoAlt style={{ marginRight: '8px' }} />
                     Reset Form
                 </motion.button>
+
+                  {/* Conditional header to show patient ID/Name when viewing a saved record */}
+                {!!(formData.id || formData.patientId) && (
+                    <h2 className="view-mode-header section-header">
+                        Viewing Patient Record: {formData.fullName || 'N/A'} (ID: {formData.id || formData.patientId || 'N/A'})
+                    </h2>
+                )}
+
 
                 <form onSubmit={handleSubmit} ref={formRef}>
                     <div className="form-grid-layout">
@@ -964,16 +999,18 @@ const PatientDetailsPage = () => {
                         {/* SUBMIT BUTTON */}
                         <div className="grid-item-12 center-text mt-40">
                             <div className="form-divider"></div>
-                            <motion.button
-                                type="submit"
-                                className="submit-btn-styled"
-                                whileHover={{ scale: 1.03 }}
-                                whileTap={{ scale: 0.98 }}
-                                disabled={loading} // Disable while saving
-                            >
-                                {/* 🎯 FIX: isEditMode is now used to change the button text */}
-                                {loading ? <><FaSpinner className="spinner" /> SAVING...</> : (isEditMode ? 'UPDATE PATIENT RECORD' : 'SAVE NEW PATIENT RECORD')}
-                            </motion.button>
+                            {/* 🎯 NEW: Only show the button if it's a new record OR if the user was allowed to edit */}
+                            {(!formData.id) && (
+                                <motion.button
+                                    type="submit"
+                                    className="submit-btn-styled"
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    disabled={loading} // Disable while saving
+                                >
+                                    {loading ? <><FaSpinner className="spinner" /> SAVING...</> : 'SAVE NEW PATIENT RECORD'}
+                                </motion.button>
+                            )}
                         </div>
                     </div>
                 </form>
@@ -982,7 +1019,7 @@ const PatientDetailsPage = () => {
             {/* --- 2. PATIENT SUMMARY TABLE --- */}
             <PatientSummaryTable
                 records={currentPatients} // 🎯 Pass the sliced records (max 5)
-                onSelectPatient={handleSelectPatient}
+
                 onViewDetails={handleViewDetails}
                 // 🎯 New Pagination Props
                 currentPage={currentPage}

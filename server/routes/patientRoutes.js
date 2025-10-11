@@ -160,15 +160,17 @@ router.get('/:id', authenticateToken, async (req, res) => {
        const query = `
             SELECT 
                 patient_id AS id, 
-                full_name, 
-                contact_details, 
-
-                -- 🎯 Missing Fields Added Below (General Details)
+                patient_id AS "patientId",       -- 🎯 NEW: Explicitly map patient_id to patientId
+                full_name AS "fullName",         -- 🎯 FIX: Alias full_name
+                contact_details AS "contactDetails", -- 🎯 FIX: Alias contact_details
+                
+                -- General Details
                 address, 
                 next_of_kin AS "nextOfKin",
                 height, 
                 weight,
                 EXTRACT(YEAR FROM age(NOW(), date_of_birth)) AS age, -- Calculated Age
+                gender, -- 🎯 FIX: Added missing gender field
                 
                 -- Medical Status
                 access_type AS "accessType",
@@ -195,23 +197,21 @@ router.get('/:id', authenticateToken, async (req, res) => {
             WHERE patient_id = $1 AND user_id = $2;
         `;
        
-
         const result = await db.query(query, [id, userId]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Patient record not found or unauthorized.' });
         }
 
-        // Convert boolean flags to 'Y'/'N' for frontend form consistency
         const patientData = result.rows[0];
-            // 🎯 FIX 1: Read the correct snake_case property from the DB result for conversion
-        patientData.diabeticStatus = patientData.diabetic_status ? 'Y' : 'N';
-        patientData.smokingStatus = patientData.smoking_status ? 'Y' : 'N';
 
-        // 🎯 CRITICAL CLEANUP: Delete the original snake_case keys after conversion
-        delete patientData.diabetic_status;
-        delete patientData.smoking_status;
+        // Convert boolean flags to 'Y'/'N' for frontend form consistency
+        patientData.diabeticStatus = patientData.diabetic_status ? 'Y' : 'N'; //
+        patientData.smokingStatus = patientData.smoking_status ? 'Y' : 'N';   //
 
+        // CRITICAL CLEANUP: Delete the original snake_case keys after conversion
+        delete patientData.diabetic_status; //
+        delete patientData.smoking_status;  //
 
         res.status(200).json(patientData);
     } catch (err) {
@@ -219,6 +219,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch single patient record.', details: err.message });
     }
 });
+
 
 
 
