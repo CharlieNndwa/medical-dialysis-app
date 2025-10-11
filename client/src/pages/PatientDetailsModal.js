@@ -27,7 +27,8 @@ const PatientDetailsModal = ({ isOpen, onClose, patientData }) => {
                         {/* Modal Header for title and control buttons */}
                         <div className="modal-header">
                             <h2 className="modal-title">
-                                Patient Record: **{patientData.fullName}**
+                                {/* FIX: Ensure ID is displayed here */}
+                                Patient Record: {patientData.fullName || 'N/A'} (ID: {patientData.id || patientData.patientId || 'N/A'})
                             </h2>
                             <div className="modal-actions">
                                 <motion.button

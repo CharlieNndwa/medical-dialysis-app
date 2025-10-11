@@ -79,16 +79,21 @@
         display: none !important;
     }
     
-    /* 5. Improve data presentation for black and white printing */
+ /* 5. Improve data presentation for black and white printing */
     .data-field {
         page-break-inside: avoid;
         margin-bottom: 8px;
     }
     
     .data-value {
+        /* CRITICAL: Tell the browser not to hide background/color on print */
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact;
+        
         background-color: transparent !important;
         border: 1px solid #ccc !important; 
         color: #000 !important;
+        box-shadow: none !important; /* New: Remove any shadows that might interfere */
     }
     
     .section-header {

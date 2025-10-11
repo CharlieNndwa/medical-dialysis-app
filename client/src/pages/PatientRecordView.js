@@ -56,40 +56,13 @@ const AttachedFilesDisplay = ({ files, patientId }) => {
 const PatientRecordView = ({ patientData }) => {
     if (!patientData) return <p>Loading patient data...</p>;
 
+        // CRITICAL FIX: Only destructure camelCase keys.
+    // The backend MUST provide these keys (patientId, fullName, contactDetails, etc.)
     const {
-        // --- Personal Details (Age should now be correct from BE data)
-        patient_id: id, // DB: patient_id -> FE: id (used for attachments)
-        full_name: fullName,
-        date_of_birth: dateOfBirth,
-        contact_details: contactDetails,
-        address, // DB: address -> FE: address (direct match)
-        next_of_kin: nextOfKin, // DB: next_of_kin -> FE: nextOfKin
-        age, // DB: age -> FE: age (direct match)
-        gender, // DB: gender -> FE: gender (direct match)
-        height, // DB: height -> FE: height (direct match)
-        weight, // DB: weight -> FE: weight (direct match)
-        
-        // --- Medical Status (Assume converted to camelCase in BE but included for safety)
-        access_type: accessType,
-        diabeticStatus, // Converted/aliased in BE fix
-        smokingStatus,  // Converted/aliased in BE fix
-        
-        // --- Dialysis Prescription
-        dialysis_modality: dialysisModality, // DB: dialysis_modality -> FE: dialysisModality
-        frequency,
-        script_duration: prescribedDose, // DB: script_duration -> FE: prescribedDose
-        dialyser,
-        buffer,
-        qd,
-        qb,
-        anticoagulant,
-        
-        // --- Script Validity (Aliased to camelCase in the BE query)
-        scriptValidityStart, // DB: script_validity_start AS "scriptValidityStart"
-        scriptExpiryDate,    // DB: script_validity_end AS "scriptExpiryDate"
-        scriptReminder,      // DB: script_reminder AS "scriptReminder"
-
-        attachments,
+        id, patientId, fullName, dateOfBirth, contactDetails, address, nextOfKin, age, gender, 
+        height, weight, accessType, diabeticStatus, smokingStatus, dialysisModality, 
+        frequency, prescribedDose, dialyser, buffer, qd, qb, anticoagulant, 
+        scriptValidityStart, scriptExpiryDate, scriptReminder, attachments
     } = patientData;
     
 
@@ -104,7 +77,10 @@ const PatientRecordView = ({ patientData }) => {
                 {/* ========================================= */}
                 {/* SECTION 1: Patient Demographics */}
                 {/* ========================================= */}
-                 <div className="grid-item-12 section-header">Patient Demographics (ID: {id || 'N/A'})</div> 
+                 <div className="grid-item-12 section-header">
+                    {/* FIX: Ensure ID is displayed here */}
+                    Patient Demographics (ID: {id || patientId || 'N/A'}) 
+                </div>
 
                 <div className="grid-item-6"><DataField label="Full Name" value={fullName} /></div>
                 <div className="grid-item-6"><DataField label="Address" value={address} /></div>
@@ -160,10 +136,10 @@ const PatientRecordView = ({ patientData }) => {
                 </div>
 
 
-                {/* ATTACHMENTS */}
+                 {/* FIX: Use one of the available IDs for the attachment component */}
                 <div className="grid-item-12 attachment-section">
                     <label className="input-label-styled">Attachments / Documents</label>
-                    <AttachedFilesDisplay files={attachments} patientId={id} />
+                    <AttachedFilesDisplay files={attachments} patientId={id || patientId} />
                 </div>
             </div>
         </div>
