@@ -1,19 +1,29 @@
 /* src/App.css */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 /* Global body styling */
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  color: #333;
+  /* CRITICAL FIX: Set Inter as the application's primary, professional font */
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+        color: #333;
+    line-height: 1.6; /* Ensure good line spacing for accessibility */
+    font-size: 16px; /* Recommended base size for web accessibility */
   /* Use a consistent background color for the entire app */
-  background-color: #f0f2f5; 
+  background-color: #f0f2f5;
   /* The overflow hidden is generally not a good practice, removed it to avoid content cutoff */
+}
+
+/* Optional: Ensure headings use the same clean font */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
 }
 
 /* Base App styling */
@@ -56,39 +66,38 @@ body {
 /* ========================================= */
 
 .global-reset-btn {
-    /* CRITICAL: Positioning - Adjusted for higher placement */
-    position: absolute;
-    top: -45px;      /* 🚨 ADJUSTED: Move up by 45px relative to its container's top edge */
-    right: 15px;     /* Standard spacing from the right */
-    z-index: 20;     /* Ensures it sits on top of all other elements */
-    
-    /* Styling (Red/White) */
-    font-size: 0.75rem; 
-    padding: 6px 12px; 
-    border: 1px solid #c0392b; 
-    color: #ffffff; 
-    background-color: #e74c3c; 
-    
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
+  /* CRITICAL: Positioning - Adjusted for higher placement */
+  position: absolute;
+  top: -45px; /* 🚨 ADJUSTED: Move up by 45px relative to its container's top edge */
+  right: 15px; /* Standard spacing from the right */
+  z-index: 20; /* Ensures it sits on top of all other elements */
+
+  /* Styling (Red/White) */
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border: 1px solid #c0392b;
+  color: #ffffff;
+  background-color: #e74c3c;
+
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
 }
 
 .global-reset-btn:hover {
-    background-color: #c0392b; 
-    border-color: #c0392b;
-    color: #ffffff; 
+  background-color: #c0392b;
+  border-color: #c0392b;
+  color: #ffffff;
 }
-
 
 /* --- Mobile Responsiveness --- */
 @media (max-width: 600px) {
-    .global-reset-btn {
-        top: -40px;      /* 🚨 ADJUSTED: Move up by 40px on small screens */
-        right: 10px;     
-        font-size: 0.7rem; 
-        padding: 4px 8px; 
-    }
+  .global-reset-btn {
+    top: -40px; /* 🚨 ADJUSTED: Move up by 40px on small screens */
+    right: 10px;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
 }
