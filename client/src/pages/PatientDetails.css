@@ -784,3 +784,20 @@
     /* 🎯 FIX: Slightly smaller text */
     font-size: 0.95rem; 
 }
+
+/* RECOMMENDED CSS ADDITION for Print Functionality */
+@media print {
+    /* Ensures the value of disabled/input fields is visible in print */
+    input[type="text"][disabled], 
+    input[type="number"][disabled], 
+    input[type="date"][disabled], 
+    select[disabled] {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border: none !important;
+        background-color: transparent !important;
+        /* The key is often to ensure the text content is styled as non-input text */
+        color: #000 !important;
+    }
+  
+}
